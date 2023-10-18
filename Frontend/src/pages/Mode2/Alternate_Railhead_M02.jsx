@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Sidenav from "./sidenav_M02";
+import config from "../../config";
 
 function Alternate_Railhead_M02() {
   const [rhSource, setRhSource] = useState("");
@@ -10,7 +11,7 @@ function Alternate_Railhead_M02() {
   const [data, setData] = useState([]);
 
   const fetchData = () => {
-    fetch("http://localhost:5000/Alternate_Railhead_readPickle")
+    fetch(config.serverUrl + "/Alternate_Railhead_readPickle")
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error(error));
@@ -26,7 +27,7 @@ function Alternate_Railhead_M02() {
     };
     try {
       const response = await fetch(
-        "http://localhost:5000/Alternate_Railhead_Solve",
+        "http://207.180.218.55:5000/Alternate_Railhead_Solve",
         {
           method: "POST",
           headers: {

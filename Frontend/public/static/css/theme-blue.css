@@ -5020,7 +5020,7 @@ td.dataTables_empty {
 .icheckbox_minimal-grey,
 .iradio_minimal-grey {
   display: inline-block;
-  *display: inline;
+  display: inline;
   vertical-align: middle;
   margin: 0;
   padding: 0;
@@ -7199,7 +7199,7 @@ li.ext_zip {
     width: 100%;
   }
 }
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 10px) {
   .page-container .page-sidebar {
     position: relative;
     float: left;

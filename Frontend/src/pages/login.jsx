@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Login.css";
+import config from "../config";
 
 function Login() {
   const [currentImage, setCurrentImage] = useState(0);
@@ -8,7 +9,7 @@ function Login() {
     "static/img/slider6.jpg",
     // Add more image paths here as needed
   ];
-  const ProjectIp = "http://localhost:5000"
+  const ProjectIp = config.serverUrl;
   const totalImages = images.length;
   const autoSlideInterval = 3000; // Interval in milliseconds (5 seconds in this example)
 
@@ -31,7 +32,7 @@ function Login() {
       form.append("username", username);
       form.append("password", password);
 
-      const response = await fetch(ProjectIp+"/login", {
+      const response = await fetch(ProjectIp + "/login", {
         method: "POST",
         credentials: "include",
         body: form,
@@ -43,10 +44,13 @@ function Login() {
       const data = await response.json();
 
       if (data.status === 1) {
-        window.location.assign("/home");
+        window.location.assign("/Daily_Planner");
         window.alert("Login Successful! Click Ok to Continue");
-      } else {
+      } else if (data.status === 0) {
         window.alert("Incorrect Credentials");
+        window.location.reload();
+      } else {
+        window.alert(data.status);
         window.location.reload();
       }
     } catch (error) {
@@ -58,7 +62,10 @@ function Login() {
   return (
     <div
       className="login-container login_container"
-      style={{ backgroundImage: `url(${images[currentImage]})` }}
+      style={{
+        backgroundImage: `url(${images[currentImage]})`,
+        height: "100vh",
+      }}
     >
       <div className="content">
         <div className="login-box animated fadeInDown">
@@ -81,7 +88,7 @@ function Login() {
                     name="username"
                     className="form-control"
                     placeholder="Username"
-                    style={{ backgroundColor: "white" }}
+                    style={{ backgroundColor: "white", color: "black" }}
                   />
                 </div>
               </div>
@@ -112,7 +119,7 @@ function Login() {
           </div>
           <div className="login-footer">
             <div className="pull-left" style={{ color: "white" }}>
-              &copy; DEVELOPED BY IIT-DELHI
+              &copy; DEVELOPED BY IIT-DELHI v2.0
             </div>
           </div>
         </div>
