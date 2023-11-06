@@ -3,8 +3,8 @@ import Sidenav from "./sidenav";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import config from "../../config";
-import style from "./Daily_Planner.css";
-import Surplus from "./Surplus";
+// import style from "./Daily_Planner.css";
+// import Surplus from "./Surplus";
 
 function Daily_Planner() {
   //---------------------------------------------------------------------------------------------
@@ -139,6 +139,10 @@ function Daily_Planner() {
   const [subOptionDestWheat6, setSubOptionDestWheat6] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [coarseGrain, setCoarseGrain] = useState(false);
+  const [frk, setFrk] = useState(false);
+  const [frk_rra, setFrk_rra] = useState(false);
+  const [frk_br, setFrk_br] = useState(false);
+  const [w_cgr, setw_cgr] = useState(false);
 
   // ---------------------------------------------------------------------------------------
 
@@ -322,8 +326,9 @@ function Daily_Planner() {
       setSurplus((prev) => [
         ...prev,
         {
-          origin_state: surplusRailhead,
-          origin_railhead: surplusState,
+          Sno: Math.floor(Math.random() * 500) + 1,
+          origin_railhead: surplusRailhead,
+          origin_state: surplusState,
           Value: surplusValue,
           Commodity: surplusCommodity,
         },
@@ -352,8 +357,9 @@ function Daily_Planner() {
       setDeficit((prev) => [
         ...prev,
         {
-          origin_state: deficitRailhead,
-          origin_railhead: deficitState,
+          Sno: Math.floor(Math.random() * 500) + 1,
+          origin_railhead: deficitRailhead,
+          origin_state: deficitState,
           Value: deficitValue,
           Commodity: deficitCommodity,
         },
@@ -555,6 +561,24 @@ function Daily_Planner() {
     (item) => item.Commodity === "Coarse Grain"
   );
 
+  const frkrraOrigin = surplus.filter((item) => item.Commodity === "FRK RRA");
+  const frkrraDestination = deficit.filter(
+    (item) => item.Commodity === "FRK RRA"
+  );
+
+  const frkBr_Origin = surplus.filter((item) => item.Commodity === "FRK BR");
+  const frkBr_Destination = deficit.filter(
+    (item) => item.Commodity === "FRK BR"
+  );
+
+  const frk_Origin = surplus.filter((item) => item.Commodity === "FRK");
+  const frk_Destination = deficit.filter((item) => item.Commodity === "FRK");
+
+  const w_cgr_Origin = surplus.filter((item) => item.Commodity === "W+CGR");
+  const w_cgr_Destination = deficit.filter(
+    (item) => item.Commodity === "W+CGR"
+  );
+
   const handleSolve = async () => {
     setDownloadMessage(false);
     if (
@@ -600,6 +624,18 @@ function Daily_Planner() {
 
       coarseGrain_origin: coarseGrainOrigin,
       coarseGrain_destination: coarseGrainDestination,
+
+      frkrra_origin: frkrraOrigin,
+      frkrra_destination: frkrraDestination,
+
+      frkbr_origin: frkBr_Origin,
+      frkbr_destination: frkBr_Destination,
+
+      frk_origin: frk_Origin,
+      frk_destination: frk_Destination,
+
+      wcgr_origin: w_cgr_Origin,
+      wcgr_destination: w_cgr_Destination,
     };
 
     try {
@@ -1488,9 +1524,15 @@ function Daily_Planner() {
     const riceData = JSON.parse(Total_result?.rra ?? 0);
     const wheatData = JSON.parse(Total_result?.wheat ?? 0);
     const coarseGrainData = JSON.parse(Total_result?.coarse_grain ?? 0);
+    const frk_rraData = JSON.parse(Total_result?.frk_rra ?? 0);
+    const frk_brData = JSON.parse(Total_result?.frk_br ?? 0);
+    const frkData = JSON.parse(Total_result?.frk ?? 0);
     setRiceData(riceData);
     setWheatData(wheatData);
     setCoarseGrain(coarseGrainData);
+    setFrk_rra(frk_rraData);
+    setFrk_br(frk_brData);
+    setFrk(frkData);
   };
 
   const exportToExcel1 = () => {
@@ -1780,13 +1822,13 @@ function Daily_Planner() {
                             }}
                           >
                             <option value="">Select Commodity</option>
-                            <option value="Rice">Rice</option>
-                            <option value="Wheat">Wheat</option>
                             <option value="RRA">RRA</option>
+                            <option value="Wheat">Wheat</option>
+                            <option value="FRK">FRK</option>
                             <option value="FRK RRA">FRK RRA</option>
                             <option value="FRK BR">FRK BR</option>
-                            <option value="Coarse Grain">Coarse Grains</option>
-                            <option value="W+ CGR">W+ CGR</option>
+                            <option value="Coarse Grain">Coarse Grain</option>
+                            <option value="W+CGR">W+CGR</option>
                             <option value="FRK+CGR">FRK+CGR</option>
                           </select>
                         </div>
@@ -1799,7 +1841,9 @@ function Daily_Planner() {
                           <input
                             type="number"
                             min={1}
-                            onChange={(e) => setSurplusValue(e.target.value)}
+                            onChange={(e) =>
+                              setSurplusValue(parseInt(e.target.value))
+                            }
                             value={surplusValue}
                           />
                         </div>
@@ -1926,13 +1970,13 @@ function Daily_Planner() {
                             }}
                           >
                             <option value="">Select Commodity</option>
-                            <option value="Rice">Rice</option>
-                            <option value="Wheat">Wheat</option>
                             <option value="RRA">RRA</option>
+                            <option value="Wheat">Wheat</option>
+                            <option value="FRK">FRK</option>
                             <option value="FRK RRA">FRK RRA</option>
                             <option value="FRK BR">FRK BR</option>
-                            <option value="Coarse Grains">Coarse Grains</option>
-                            <option value="W+ CGR">W+ CGR</option>
+                            <option value="Coarse Grain">Coarse Grain</option>
+                            <option value="W+CGR">W+CGR</option>
                             <option value="FRK+CGR">FRK+CGR</option>
                           </select>
                         </div>
@@ -1945,7 +1989,9 @@ function Daily_Planner() {
                           <input
                             type="number"
                             min={1}
-                            onChange={(e) => setDeficitValue(e.target.value)}
+                            onChange={(e) =>
+                              setDeficitValue(parseInt(e.target.value))
+                            }
                             value={deficitValue}
                           />
                         </div>
@@ -2640,473 +2686,540 @@ function Daily_Planner() {
 
                   {solutionSolved && (
                     <div>
-                      {scn && (
-                        <div>
-                          <button
-                            style={{ color: "white", marginLeft: "15px" }}
-                            className="btn btn-danger dropdown-toggle"
-                            onClick={() => exportToExcel2()}
-                          >
-                            <i className="fa fa-bars"></i> Download
-                            Railhead-Railhead Detailed Plan
-                          </button>
+                      <div>
+                        <button
+                          style={{ color: "white", marginLeft: "15px" }}
+                          className="btn btn-danger dropdown-toggle"
+                          onClick={() => exportToExcel1()}
+                        >
+                          <i className="fa fa-bars"></i> Download
+                          Railhead-Railhead Detailed Plan
+                        </button>
 
-                          <button
-                            style={{ color: "white", marginLeft: "15px" }}
-                            className="btn btn-danger dropdown-toggle"
-                            onClick={viewGrid}
-                          >
-                            View Railhead Detailed Plan
-                          </button>
-                          <div>
-                            {showMessage && (
+                        <button
+                          style={{ color: "white", marginLeft: "15px" }}
+                          className="btn btn-danger dropdown-toggle"
+                          onClick={viewGrid}
+                        >
+                          View Railhead Detailed Plan
+                        </button>
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {riceData !== null && riceData.length > 0 ? (
                               <div>
-                                {riceData !== null && riceData.length > 0 ? (
-                                  <div>
-                                    <table>
-                                      <thead>
-                                        <tr style={{ margin: "auto" }}>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            Sr. No
-                                          </th>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            Src RH
-                                          </th>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            Src state
-                                          </th>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            Dest RH
-                                          </th>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            Dest State
-                                          </th>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            commodity
-                                          </th>
-                                          <th
-                                            style={{
-                                              padding: "10px",
-                                              width: "350px",
-                                            }}
-                                          >
-                                            values
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        {riceData.map((item, index) => (
-                                          <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{item.From}</td>
-                                            <td>{item["From State"]}</td>
-                                            <td>{item.To}</td>
-                                            <td>{item["To State"]}</td>
-                                            <td>{item.Commodity}</td>
-                                            <td>{item.Values}</td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                ) : (
-                                  <p style={{ marginTop: 10 }}>
-                                    No Rice routes
-                                  </p>
-                                )}
+                                <div>RRA</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {riceData.map((item, index) => (
+                                      <tr key={item["Unnamed: 0"]}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
                               </div>
+                            ) : (
+                              <div />
                             )}
                           </div>
-                          <div></div>
-                          {showMessage && (
-                            <div>
-                              {wheatData !== null && wheatData.length > 0 ? (
-                                <div>
-                                  <table>
-                                    <thead>
-                                      <tr style={{ margin: "auto" }}>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          Sr. No
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          Src RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          Src state
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          Dest RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          Dest State
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          commodity
-                                        </th>
-                                        {/* <th style={{ padding: "10px", width: "350px" }}>
+                        )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {wheatData !== null && wheatData.length > 0 ? (
+                              <div>
+                                <div>Wheat</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
                                         values
-                                      </th> */}
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {wheatData.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
                                       </tr>
-                                    </thead>
-                                    <tbody>
-                                      {wheatData.map((item) => (
-                                        <tr key={item["Unnamed: 0"]}>
-                                          <td>{item["Unnamed: 0"] + 1}</td>
-                                          <td>{item.From}</td>
-                                          <td>{item["From State"]}</td>
-                                          <td>{item.To}</td>
-                                          <td>{item["To State"]}</td>
-                                          <td>{item.Commodity}</td>
-                                          {/* <td>{item.Values}</td> */}
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              ) : (
-                                <p>No Wheat routes</p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      {!scn && (
-                        <div>
-                          <button
-                            style={{ color: "white", marginLeft: "15px" }}
-                            className="btn btn-danger dropdown-toggle"
-                            onClick={() => exportToExcel1()}
-                          >
-                            <i className="fa fa-bars"></i> Download
-                            Railhead-Railhead Detailed Plan
-                          </button>
-
-                          <button
-                            style={{ color: "white", marginLeft: "15px" }}
-                            className="btn btn-danger dropdown-toggle"
-                            onClick={viewGrid}
-                          >
-                            View Railhead Detailed Plan
-                          </button>
-                          {showMessage && (
-                            <div style={{ marginTop: 15, marginLeft: 20 }}>
-                              {riceData !== null && riceData.length > 0 ? (
-                                <div>
-                                  <table>
-                                    <thead>
-                                      <tr style={{ margin: "auto" }}>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Sr. No
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Src RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Src state
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Dest RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Dest state
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          commodity
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          values
-                                        </th>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {coarseGrain !== null && coarseGrain.length > 0 ? (
+                              <div>
+                                <div>Coarse Grain</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {coarseGrain.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
                                       </tr>
-                                    </thead>
-                                    <tbody>
-                                      {riceData.map((item, index) => (
-                                        <tr key={item["Unnamed: 0"]}>
-                                          <td>{index + 1}</td>
-                                          <td>{item.From}</td>
-                                          <td>{item["From State"]}</td>
-                                          <td>{item.To}</td>
-                                          <td>{item["To State"]}</td>
-                                          <td>{item.Commodity}</td>
-                                          <td>{item.Values}</td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              ) : (
-                                <p style={{ marginTop: 10 }}>
-                                  No {commodity} routes
-                                </p>
-                              )}
-                            </div>
-                          )}
-                          {showMessage && (
-                            <div style={{ marginTop: 15, marginLeft: 20 }}>
-                              {wheatData !== null && wheatData.length > 0 ? (
-                                <div>
-                                  <table>
-                                    <thead>
-                                      <tr style={{ margin: "auto" }}>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Sr. No
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Src RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Src state
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Dest RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Dest State
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          commodity
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          values
-                                        </th>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {frk_rra !== null && frk_rra.length > 0 ? (
+                              <div>
+                                <div>frk rra</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {frk_rra.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
                                       </tr>
-                                    </thead>
-                                    <tbody>
-                                      {wheatData.map((item, index) => (
-                                        <tr key={index}>
-                                          <td>{index + 1}</td>
-                                          <td>{item.From}</td>
-                                          <td>{item["From State"]}</td>
-                                          <td>{item.To}</td>
-                                          <td>{item["To State"]}</td>
-                                          <td>{item.Commodity}</td>
-                                          <td>{item.Values}</td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              ) : (
-                                <p>No {commodity} routes</p>
-                              )}
-                            </div>
-                          )}
-                          {showMessage && (
-                            <div style={{ marginTop: 15, marginLeft: 20 }}>
-                              {wheatData !== null && wheatData.length > 0 ? (
-                                <div>
-                                  <table>
-                                    <thead>
-                                      <tr style={{ margin: "auto" }}>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Sr. No
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Src RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Src state
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Dest RH
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          Dest State
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "200px",
-                                          }}
-                                        >
-                                          commodity
-                                        </th>
-                                        <th
-                                          style={{
-                                            padding: "10px",
-                                            width: "350px",
-                                          }}
-                                        >
-                                          values
-                                        </th>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {frk_br !== null && frk_br.length > 0 ? (
+                              <div>
+                                <div>Frk Br</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {frk_br.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
                                       </tr>
-                                    </thead>
-                                    <tbody>
-                                      {coarseGrain.map((item, index) => (
-                                        <tr key={index}>
-                                          <td>{index + 1}</td>
-                                          <td>{item.From}</td>
-                                          <td>{item["From State"]}</td>
-                                          <td>{item.To}</td>
-                                          <td>{item["To State"]}</td>
-                                          <td>{item.Commodity}</td>
-                                          <td>{item.Values}</td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              ) : (
-                                <p>No {commodity} routes</p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {frk !== null && frk.length > 0 ? (
+                              <div>
+                                <div>frk</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {frk.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                   <br />
