@@ -31,13 +31,10 @@ function Daily_Planner() {
   );
 
   const [deficitInlineState, setDeficitInlineState] = useState();
-  const [deficitInlineRailhead, setDeficitInlineRailhead] = useState();
-  const [deficitInlineCommodity, setDeficitInlineCommodity] = useState();
   const [totalDeficitInlineRailhead, setTotalDeficitInlineRailhead] = useState(
     []
   );
   //----------------------------------------------------------------------------------------------------------
-
   const ProjectIp = config.serverUrl;
   const [fileSelected, setFileSelected] = useState(false);
   const [inline_value_rice, setInlineValueRice] = useState("");
@@ -101,10 +98,8 @@ function Daily_Planner() {
   const [Relevant_result, set_Relevant_Result] = useState(null);
   const [excelData, setExcelData] = useState({});
   const [activeSheetName, setActiveSheetName] = useState(null);
-  const [sheet, setSheet] = useState(null);
   const [updateExcel, setUpdateExcel] = useState(false);
   const [updateExcel2, setUpdateExcel2] = useState(false);
-  const [modifiedExcel, setModifiedExcel] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
   const [isLoading3, setIsLoading3] = useState(false);
@@ -117,33 +112,20 @@ function Daily_Planner() {
   const [wheatData, setWheatData] = useState(false);
   const [downloadMessage, setDownloadMessage] = useState(false);
   const [progress, setProgress] = useState([]);
-  const [filterRailHead, setfilterRailHead] = useState([]);
-  const [commodity, set_Commodity] = useState("");
   const [inline_value_dest_rice, setDestInlineValueRice] = useState("");
   const [inline_value_dest_wheat, setDestInlineValueWheat] = useState("");
   const [block_dataDest2, setBlockdataDest2] = useState([]);
   const [block_dataDestWheat2, setBlockdataDestWheat2] = useState([]);
-  const [selectedOptionDRI5, setSelectedOptionDRI5] = useState("default");
-  const [subOptionsDRI5, setSubOptionsDRI5] = useState([]);
-  const [selectedOptionDRI6, setSelectedOptionDRI6] = useState("default");
-  const [subOptionsDRI6, setSubOptionsDRI6] = useState([]);
-  const [selectedOptionDestWheat5, setSelectedOptionDestWheat5] =
-    useState("default");
-  const [subOptionsDestWheat5, setSubOptionsDestWheat5] = useState([]);
-  const [selectedOptionDestWheat6, setSelectedOptionDestWheat6] =
-    useState("default");
-  const [subOptionsDestWheat6, setSubOptionsDestWheat6] = useState([]);
-  const [subOptionDRI5, setSubOptionDRI5] = useState("");
-  const [subOptionDRI6, setSubOptionDRI6] = useState("");
-  const [subOptionDestWheat5, setSubOptionDestWheat5] = useState("");
-  const [subOptionDestWheat6, setSubOptionDestWheat6] = useState("");
+  useState("default");
+  useState("default");
   const [selectedFile, setSelectedFile] = useState(null);
   const [coarseGrain, setCoarseGrain] = useState(false);
   const [frk, setFrk] = useState(false);
   const [frk_rra, setFrk_rra] = useState(false);
   const [frk_br, setFrk_br] = useState(false);
+  const [frk_cgr, setFrk_cgr] = useState(false);
   const [w_cgr, setw_cgr] = useState(false);
-
+  const [riceOriginvalue, setRiceOriginValue] = useState();
   // ---------------------------------------------------------------------------------------
 
   const processSheetData = (workbook, sheetIndices) => {
@@ -246,36 +228,36 @@ function Daily_Planner() {
     setTotalDeficitRailhead(dropdownOptions);
   };
 
-  const handleSurplusInlineStateChange = async (e) => {
-    const selectedValue = e.target.value;
-    setSurplusInlineState(selectedValue);
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    let dropdownOptions = [];
-    let dropdownOptions_default = {
-      value: "",
-      label: "Please select Railhead",
-    };
-    for (let i = 0; i < jsonData.length; i++) {
-      if (
-        jsonData[i][1] &&
-        jsonData[i][1].trim().toLowerCase() ===
-          selectedValue.trim().toLowerCase()
-      ) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-    dropdownOptions.unshift(dropdownOptions_default);
-    setTotalSurplusInlineRailhead(dropdownOptions);
-  };
+  // const handleSurplusInlineStateChange = async (e) => {
+  //   const selectedValue = e.target.value;
+  //   setSurplusInlineState(selectedValue);
+  //   const response = await fetch("/data/Updated_railhead_list.xlsx");
+  //   const arrayBuffer = await response.arrayBuffer();
+  //   const data = new Uint8Array(arrayBuffer);
+  //   const workbook = XLSX.read(data, { type: "array" });
+  //   const sheetName = workbook.SheetNames[0];
+  //   const sheet = workbook.Sheets[sheetName];
+  //   const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+  //   let dropdownOptions = [];
+  //   let dropdownOptions_default = {
+  //     value: "",
+  //     label: "Please select Railhead",
+  //   };
+  //   for (let i = 0; i < jsonData.length; i++) {
+  //     if (
+  //       jsonData[i][1] &&
+  //       jsonData[i][1].trim().toLowerCase() ===
+  //         selectedValue.trim().toLowerCase()
+  //     ) {
+  //       dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
+  //     }
+  //   }
+  //   dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
+  //   dropdownOptions.unshift(dropdownOptions_default);
+  //   setTotalSurplusInlineRailhead(dropdownOptions);
+  // };
 
-  const AddSurplusInline = async (e) => {};
+  // const AddSurplusInline = async (e) => {};
 
   const handleDefictInlineStateChange = async (e) => {
     const selectedValue = e.target.value;
@@ -310,8 +292,8 @@ function Daily_Planner() {
     e.preventDefault();
     const existingIndex = surplus.findIndex(
       (row) =>
-        row.Railhead === surplusRailhead &&
-        row.State === surplusState &&
+        row.origin_railhead === surplusRailhead &&
+        row.origin_state === surplusState &&
         row.Commodity === surplusCommodity
     );
 
@@ -343,8 +325,8 @@ function Daily_Planner() {
     e.preventDefault();
     const existingIndex = deficit.findIndex(
       (row) =>
-        row.Railhead === deficitRailhead &&
-        row.State === deficitState &&
+        row.origin_railhead === deficitRailhead &&
+        row.origin_state === deficitState &&
         row.Commodity === deficitCommodity
     );
 
@@ -406,6 +388,18 @@ function Daily_Planner() {
 
   const handleFileChange_ = (event) => {
     setSelectedFile(event.target.files[0]);
+  };
+
+  const handleDeleteRow_surplus__source = (row, index) => {
+    const updatedSurplus = [...surplus];
+    updatedSurplus.splice(index, 1);
+    setSurplus(updatedSurplus);
+  };
+
+  const handleDeleteRow_deficit__dest = (row, index) => {
+    const updatedDeficit = [...deficit];
+    updatedDeficit.splice(index, 1);
+    setDeficit(updatedDeficit);
   };
 
   const handleFileUpload = () => {
@@ -547,9 +541,12 @@ function Daily_Planner() {
   useEffect(() => {
     getCommodityData();
   }, []);
-
   const riceOrigin = surplus.filter((item) => item.Commodity === "RRA");
   const riceDestination = deficit.filter((item) => item.Commodity === "RRA");
+  const [riceDestinationValue, setRiceDestinationValue] = useState();
+  const [wheatOriginValue, setWheatOriginValue] = useState();
+  const [wheatDestinationValue, setWheatDestinationValue] = useState();
+  const [coarseGrainOriginValue, setCoarseGrainOriginValue] = useState();
 
   const wheatOrigin = surplus.filter((item) => item.Commodity === "Wheat");
   const wheatDestination = deficit.filter((item) => item.Commodity === "Wheat");
@@ -579,11 +576,32 @@ function Daily_Planner() {
     (item) => item.Commodity === "W+CGR"
   );
 
+  const frk_cgr_Origin = surplus.filter((item) => item.Commodity === "FRK+CGR");
+  const frk_cgr_Destination = deficit.filter(
+    (item) => item.Commodity === "FRK+CGR"
+  );
+
+  useEffect(() => {
+    setRiceOriginValue(
+      riceOrigin.reduce((total, item) => total + item.Value, 0)
+    );
+    setRiceDestinationValue(
+      riceDestination.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setWheatOriginValue(
+      wheatOrigin.reduce((total, item) => total + item.Value, 0)
+    );
+    setWheatDestinationValue(
+      wheatDestination.reduce((total, item) => total + item.Value, 0)
+    );
+  });
+
   const handleSolve = async () => {
     setDownloadMessage(false);
     if (
-      number_check1 < number_check2 ||
-      supplyWeatCount < destinationWheatCount
+      riceOriginvalue < riceDestinationValue ||
+      wheatOriginValue < wheatDestinationValue
     ) {
       alert("Destination indents more than Supply indents Please check");
       setIsLoading(false);
@@ -636,6 +654,9 @@ function Daily_Planner() {
 
       wcgr_origin: w_cgr_Origin,
       wcgr_destination: w_cgr_Destination,
+
+      frkcgr_origin: frk_cgr_Origin,
+      frkcgr_destination: frk_cgr_Destination,
     };
 
     try {
@@ -906,82 +927,12 @@ function Daily_Planner() {
     setSubOptions4(dropdownOptions);
   };
 
-  const handleDropdownChangeWheat4 = async (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOptionWheat4(selectedValue);
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    // Assuming the Excel file has only one sheet
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    // Parse the sheet data into JSON format
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    let dropdownOptions = [];
-    let dropdownOptions_default = {
-      value: "",
-      label: "Please select Railhead",
-    };
-    for (let i = 0; i < jsonData.length; i++) {
-      if (
-        jsonData[i][1] &&
-        jsonData[i][1].trim().toLowerCase() ===
-          selectedValue.trim().toLowerCase()
-      ) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-    // dropdownOptions=dropdownOptions_default+dropdownOptions;
-    dropdownOptions.unshift(dropdownOptions_default);
-    setSubOptionsWheat4(dropdownOptions);
-  };
-
   const handleSubDropdownChange1 = (e) => {
     setSubOption1(e.target.value);
   };
 
   const handleSubDropdownChange2 = (e) => {
     setSubOption2(e.target.value);
-  };
-  const handleSubDropdownChange3 = (e) => {
-    setSubOption3(e.target.value);
-  };
-  const handleSubDropdownChangeWheat3 = (e) => {
-    setSubOptionWheat3(e.target.value);
-  };
-
-  const handleSubDropdownChange4 = (e) => {
-    setSubOption4(e.target.value);
-  };
-  const handleSubDropdownChangeWheat4 = (e) => {
-    setSubOptionWheat4(e.target.value);
-  };
-
-  const handleSubDropdownChange5 = (e) => {
-    setSubOption5(e.target.value);
-  };
-
-  const handleSubDropdownChangeWheat5 = (e) => {
-    setSubOptionWheat5(e.target.value);
-  };
-
-  const handleSubDropdownChange6 = (e) => {
-    setSubOption6(e.target.value);
-  };
-  const handleSubDropdownChangeWheat6 = (e) => {
-    setSubOptionWheat6(e.target.value);
-  };
-
-  const handleInlineValueWheat = (e) => {
-    setInlineValueWheat(e.target.value);
-  };
-  const handleInlineValueRice = (e) => {
-    setInlineValueRice(e.target.value);
   };
 
   const handleDropdownChange_fixed = async (e) => {
@@ -1070,43 +1021,6 @@ function Daily_Planner() {
   const handleDeleteRow_fixed = (e) => {
     let fixed_data_ = fixed_data.filter((item) => item["id"] !== e);
     setFixeddata(fixed_data_);
-    setDownloadMessage(false);
-  };
-  const handleDeleteRow_inline = (e) => {
-    let fixed_data_ = block_data2.filter((item) => item["id"] !== e);
-    setBlockdata2(fixed_data_);
-    setDownloadMessage(false);
-  };
-  const handleDeleteRow_inlineWheat = (e) => {
-    let fixed_data_ = block_dataWheat2.filter((item) => item["id"] !== e);
-    setBlockdataWheat2(fixed_data_);
-    setDownloadMessage(false);
-  };
-  const handleDeleteRow_Rice_s = (e) => {
-    let block_data3_ = block_data3.filter((item) => item["id"] !== e);
-    setBlockdata3(block_data3_);
-    setnumber_check1(number_check1 - 1);
-    setDownloadMessage(false);
-  };
-
-  const handleDeleteRow_Wheat_s = (e) => {
-    let block_data3_ = block_dataWheat3.filter((item) => item["id"] !== e);
-    setBlockdataWheat3(block_data3_);
-    setSupplyWeatCount(supplyWeatCount - 1);
-    setDownloadMessage(false);
-  };
-
-  const handleDeleteRow_Rice__dest = (index) => {
-    let rice_destination_ = rice_destination.filter((item, i) => i !== index);
-    setRiceDestination(rice_destination_);
-    setnumber_check2(number_check2 - 1);
-    setDownloadMessage(false);
-  };
-
-  const handleDeleteRow_Wheat__dest = (index) => {
-    let wheat_destination_ = wheat_destination.filter((item, i) => i !== index);
-    setWheatDestination(wheat_destination_);
-    setDestinationWheatCount(destinationWheatCount - 1);
     setDownloadMessage(false);
   };
 
@@ -1527,12 +1441,16 @@ function Daily_Planner() {
     const frk_rraData = JSON.parse(Total_result?.frk_rra ?? 0);
     const frk_brData = JSON.parse(Total_result?.frk_br ?? 0);
     const frkData = JSON.parse(Total_result?.frk ?? 0);
+    const frkcgrData = JSON.parse(Total_result?.frkcgr ?? 0);
+    const wcgrData = JSON.parse(Total_result?.wcgr ?? 0);
     setRiceData(riceData);
     setWheatData(wheatData);
     setCoarseGrain(coarseGrainData);
     setFrk_rra(frk_rraData);
     setFrk_br(frk_brData);
     setFrk(frkData);
+    setFrk_cgr(frkcgrData);
+    setw_cgr(wcgrData);
   };
 
   const exportToExcel1 = () => {
@@ -1849,6 +1767,14 @@ function Daily_Planner() {
                         </div>
                         <button
                           onClick={AddSurplus}
+                          disabled={
+                            surplusState === undefined ||
+                            surplusState === "default" ||
+                            surplusRailhead === undefined ||
+                            surplusRailhead === "" ||
+                            surplusCommodity === undefined ||
+                            surplusCommodity === ""
+                          }
                           style={{
                             backgroundColor: "orange",
                             width: 70,
@@ -1858,6 +1784,7 @@ function Daily_Planner() {
                           Add
                         </button>
                       </div>
+                      <br />
                       <div>Surplus</div>
                       <table style={{ width: "60vw" }}>
                         <thead>
@@ -1867,6 +1794,7 @@ function Daily_Planner() {
                             <th>State</th>
                             <th>Value</th>
                             <th>Commodity</th>
+                            <th>Delete</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1877,10 +1805,26 @@ function Daily_Planner() {
                               <td>{row.origin_state}</td>
                               <td>{row.Value}</td>
                               <td>{row.Commodity}</td>
+                              <td>
+                                <span
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "#ff0000",
+                                    fontSize: "1.2rem",
+                                  }}
+                                  onClick={() =>
+                                    handleDeleteRow_surplus__source(row, index)
+                                  }
+                                  title="Delete"
+                                >
+                                  &times;
+                                </span>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+                      <br />
                       <div
                         style={{
                           display: "flex",
@@ -2002,10 +1946,19 @@ function Daily_Planner() {
                             width: 70,
                             height: 40,
                           }}
+                          disabled={
+                            deficitState === undefined ||
+                            deficitState === "default" ||
+                            deficitRailhead === undefined ||
+                            deficitRailhead === "" ||
+                            deficitCommodity === undefined ||
+                            deficitCommodity === ""
+                          }
                         >
                           Add
                         </button>
                       </div>
+                      <br />
                       <div>Deficit</div>
                       <table style={{ width: "60vw" }}>
                         <thead>
@@ -2015,6 +1968,7 @@ function Daily_Planner() {
                             <th>State</th>
                             <th>Value</th>
                             <th>Commodity</th>
+                            <th>Delete</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -2025,11 +1979,26 @@ function Daily_Planner() {
                               <td>{row.origin_state}</td>
                               <td>{row.Value}</td>
                               <td>{row.Commodity}</td>
+                              <td>
+                                <span
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "#ff0000",
+                                    fontSize: "1.2rem",
+                                  }}
+                                  onClick={() =>
+                                    handleDeleteRow_deficit__dest(row, index)
+                                  }
+                                  title="Delete"
+                                >
+                                  &times;
+                                </span>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                      <div
+                      {/* <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
@@ -2057,44 +2026,24 @@ function Daily_Planner() {
                             <option value="Chattisgarh">Chattisgarh</option>
                             <option value="Goa">Goa</option>
                             <option value="Gujarat">Gujarat</option>
-                            {/* <option value="Haryana">Haryana</option> */}
+                            <option value="Haryana">Haryana</option>
                             <option value="Jammu & Kashmir">
                               Jammu & Kashmir
                             </option>
                             <option value="Jharkhand">Jharkhand</option>
                             <option value="Karnataka">Karnataka</option>
                             <option value="Kerala">Kerala</option>
-                            {/* <option value="MP">Madhya Pradesh</option> */}
+                            <option value="MP">Madhya Pradesh</option>
                             <option value="Maharashtra">Maharashtra</option>
                             <option value="NE">North East</option>
                             <option value="Odisha">Odisha</option>
-                            {/* <option value="Punjab">Punjab</option> */}
+                            <option value="Punjab">Punjab</option>
                             <option value="Rajasthan">Rajasthan</option>
                             <option value="Tamil Nadu">Tamil Nadu</option>
                             <option value="Telangana">Telangana</option>
                             <option value="UP">Uttar Pradesh</option>
                             <option value="Uttarakhand">Uttarakhand</option>
                             <option value="West Bengal">West Bengal</option>
-                          </select>
-                        </div>
-                        <div
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <strong style={{ fontSize: "16px", padding: "5px" }}>
-                            Select Inline Railhead
-                          </strong>
-                          <select
-                            style={{ width: "200px", padding: "5px" }}
-                            onChange={(e) =>
-                              setSurplusInlineRailhead(e.target.value)
-                            }
-                            value={surplusInlineRailhead}
-                          >
-                            {totalSurplusInlineRailhead.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
                           </select>
                         </div>
                         <div
@@ -2116,18 +2065,18 @@ function Daily_Planner() {
                             <option value="Chattisgarh">Chattisgarh</option>
                             <option value="Goa">Goa</option>
                             <option value="Gujarat">Gujarat</option>
-                            {/* <option value="Haryana">Haryana</option> */}
+                            <option value="Haryana">Haryana</option>
                             <option value="Jammu & Kashmir">
                               Jammu & Kashmir
                             </option>
                             <option value="Jharkhand">Jharkhand</option>
                             <option value="Karnataka">Karnataka</option>
                             <option value="Kerala">Kerala</option>
-                            {/* <option value="MP">Madhya Pradesh</option> */}
+                            <option value="MP">Madhya Pradesh</option>
                             <option value="Maharashtra">Maharashtra</option>
                             <option value="NE">North East</option>
                             <option value="Odisha">Odisha</option>
-                            {/* <option value="Punjab">Punjab</option> */}
+                            <option value="Punjab">Punjab</option>
                             <option value="Rajasthan">Rajasthan</option>
                             <option value="Tamil Nadu">Tamil Nadu</option>
                             <option value="Telangana">Telangana</option>
@@ -2166,13 +2115,14 @@ function Daily_Planner() {
                         >
                           Add
                         </button>
-                      </div>
-                      <button onClick={handleOptimizePlan}>
+                      </div> */}
+                      {/* <button onClick={handleOptimizePlan}>
                         Optimize solution{" "}
-                      </button>
+                      </button> */}
                     </div>
                     {/* ----------------------------------------------------------------------------------------- */}
-                    <p style={{ margin: 0, padding: 0 }}>
+                    <br />
+                    <p style={{ margin: 2, padding: 0 }}>
                       <strong
                         style={{
                           color: "#9d0921",
@@ -2183,7 +2133,6 @@ function Daily_Planner() {
                         For Route Blocking:
                       </strong>
                     </p>
-                    <br />
                     <div
                       style={{
                         display: "flex",
@@ -2191,7 +2140,6 @@ function Daily_Planner() {
                         width: 1170,
                       }}
                     >
-                      {/* <label htmlFor="origin_state"> */}
                       <div>
                         <strong style={{ fontSize: "16px", padding: "5px" }}>
                           Select Origin State
@@ -2673,9 +2621,6 @@ function Daily_Planner() {
                       </label>
                     </div>
                   </div>
-                  <br />
-                  <br />
-                  <br />
                   <br />
                   <br />
                   {/* <div>
@@ -3219,6 +3164,178 @@ function Daily_Planner() {
                             )}
                           </div>
                         )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {frk_cgr !== null && frk_cgr.length > 0 ? (
+                              <div>
+                                <div>frk cgr</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {frk_cgr.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
+                        {showMessage && (
+                          <div style={{ marginTop: 15, marginLeft: 20 }}>
+                            {w_cgr !== null && w_cgr.length > 0 ? (
+                              <div>
+                                <div>w+cgr</div>
+                                <table>
+                                  <thead>
+                                    <tr style={{ margin: "auto" }}>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Sr. No
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Src state
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest RH
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        Dest State
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "200px",
+                                        }}
+                                      >
+                                        commodity
+                                      </th>
+                                      <th
+                                        style={{
+                                          padding: "10px",
+                                          width: "350px",
+                                        }}
+                                      >
+                                        values
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {w_cgr.map((item, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.From}</td>
+                                        <td>{item["From State"]}</td>
+                                        <td>{item.To}</td>
+                                        <td>{item["To State"]}</td>
+                                        <td>{item.Commodity}</td>
+                                        <td>{item.Values}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -3241,91 +3358,49 @@ function Daily_Planner() {
           }}
         >
           <span style={{ color: "black", fontSize: "32px" }}>Progress Bar</span>
-          {number_check1 > 0 ||
-          number_check2 > 0 ||
-          supplyWeatCount > 0 ||
-          destinationWheatCount > 0 ||
-          progress.length > 0 ? (
+
+          <div
+            style={{
+              padding: "8px 0",
+              width: "90%",
+              display: "flex",
+              flexDirection: "column",
+              border: "2px dashed black",
+              marginTop: 15,
+            }}
+            id="console_"
+          >
             <div
               style={{
-                padding: "8px 0",
-                width: "90%",
+                margin: "0px 8px",
                 display: "flex",
                 flexDirection: "column",
-                border: "2px dashed black",
-                marginTop: 15,
+                gap: 8,
               }}
-              id="console_"
             >
-              <div
-                style={{
-                  margin: "0px 8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                }}
-              >
-                {number_check1 > 0 ? (
-                  <div>{`Supply Value of Rice is ${number_check1}`}</div>
-                ) : null}
-                {number_check2 > 0 ? (
-                  <div
-                    style={{
-                      color: number_check1 >= number_check2 ? "" : "red",
-                    }}
-                  >
-                    {`Destination Value of Rice is ${number_check2}`}
-                  </div>
-                ) : null}
-                {supplyWeatCount > 0 ? (
-                  <div>{`Supply Value of Wheat is ${supplyWeatCount}`}</div>
-                ) : null}
-                {destinationWheatCount > 0 ? (
-                  <div
-                    style={{
-                      color:
-                        supplyWeatCount >= destinationWheatCount ? "" : "red",
-                    }}
-                  >
-                    {`Destination Value of Wheat is ${destinationWheatCount}`}
-                  </div>
-                ) : null}
-                {progress.length > 0 && progress.map((ele) => <div>{ele}</div>)}
-                {isLoading ? (
-                  <div
-                    style={{
-                      width: 200,
-                      display: "grid",
-                      gridTemplateColumns: "1fr auto",
-                      alignItems: "end",
-                    }}
-                  >
-                    Processing
-                    <span
-                      class="container"
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        marginLeft: -10,
-                        marginBottom: 4,
-                        gap: 1,
-                      }}
-                    >
-                      <div class="dot"></div>
-                      <div class="dot"></div>
-                      <div class="dot"></div>
-                    </span>
-                  </div>
-                ) : null}
-                {downloadMessage ? (
-                  <div>
-                    Solution has been done. Click on download RH to RH Detailed
-                    plan
-                  </div>
-                ) : null}
-              </div>
+              {riceOriginvalue > 0 || riceDestinationValue > 0 ? (
+                <div
+                  style={{
+                    color: riceDestinationValue > riceOriginvalue ? "red" : "",
+                  }}
+                >{`Supply Value of Rice is ${riceOriginvalue}`}</div>
+              ) : null}
+              {riceDestinationValue > 0 ? (
+                <div>{`Destination Value of Rice is ${riceDestinationValue}`}</div>
+              ) : null}
+              {wheatOriginValue > 0 ? (
+                <div
+                  style={{
+                    color:
+                      wheatDestinationValue > wheatOriginValue ? "red" : "",
+                  }}
+                >{`Supply Value of Wheat is ${wheatOriginValue}`}</div>
+              ) : null}
+              {wheatDestinationValue > 0 ? (
+                <div>{`Destination Value of Wheat is ${wheatDestinationValue}`}</div>
+              ) : null}
             </div>
-          ) : null}
+          </div>
         </div>
       </div>
     </div>
