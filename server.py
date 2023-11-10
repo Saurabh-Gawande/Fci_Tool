@@ -1763,7 +1763,7 @@ def Daily_Planner():
                 prob += lpSum(x_ij_wcgr[(j, i)] for j in source_wcgr.keys()) >= dest_wcgr[i] 
 
             prob.writeLP("FCI_monthly_model_allocation_rr.lp")
-            prob.solve()
+            prob.solve(CPLEX())
             print("Status:", LpStatus[prob.status])
             print("Minimum Cost of Transportation = Rs.", prob.objective.value(), "Lakh")
             print("Total Number of Variables:", len(prob.variables()))

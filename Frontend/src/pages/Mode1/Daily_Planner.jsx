@@ -126,6 +126,22 @@ function Daily_Planner() {
   const [frk_cgr, setFrk_cgr] = useState(false);
   const [w_cgr, setw_cgr] = useState(false);
   const [riceOriginvalue, setRiceOriginValue] = useState();
+  const [riceDestinationValue, setRiceDestinationValue] = useState();
+  const [wheatOriginValue, setWheatOriginValue] = useState();
+  const [wheatDestinationValue, setWheatDestinationValue] = useState();
+  const [coarseGrainOriginValue, setCoarseGrainOriginValue] = useState();
+  const [coarseGrainDestinationValue, setCoarseGrainDestinationValue] =
+    useState();
+  const [frkrraOriginValue, setfrkrraOriginValue] = useState();
+  const [frkrraDestinationValue, setfrkrraDestinationValue] = useState();
+  const [frkbrOriginValue, setfrkbrOriginValue] = useState();
+  const [frkbrDestinationValue, setfrkbrDestinationValue] = useState();
+  const [wcgrOriginValue, setwcgrOriginValue] = useState();
+  const [wcgrDestinationValue, setwcgrDestinationValue] = useState();
+  const [frkcgrOriginValue, setfrkcgrOriginValue] = useState();
+  const [frkcgrDestinationValue, setfrkcgrDestinationValue] = useState();
+  const [frkOriginValue, setfrkOriginValue] = useState();
+  const [frkDestinationValue, setfrkDestinationValue] = useState();
   // ---------------------------------------------------------------------------------------
 
   const processSheetData = (workbook, sheetIndices) => {
@@ -543,10 +559,6 @@ function Daily_Planner() {
   }, []);
   const riceOrigin = surplus.filter((item) => item.Commodity === "RRA");
   const riceDestination = deficit.filter((item) => item.Commodity === "RRA");
-  const [riceDestinationValue, setRiceDestinationValue] = useState();
-  const [wheatOriginValue, setWheatOriginValue] = useState();
-  const [wheatDestinationValue, setWheatDestinationValue] = useState();
-  const [coarseGrainOriginValue, setCoarseGrainOriginValue] = useState();
 
   const wheatOrigin = surplus.filter((item) => item.Commodity === "Wheat");
   const wheatDestination = deficit.filter((item) => item.Commodity === "Wheat");
@@ -595,13 +607,67 @@ function Daily_Planner() {
     setWheatDestinationValue(
       wheatDestination.reduce((total, item) => total + item.Value, 0)
     );
+
+    setCoarseGrainOriginValue(
+      coarseGrainOrigin.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setCoarseGrainDestinationValue(
+      coarseGrainDestination.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkrraOriginValue(
+      frkrraOrigin.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkrraDestinationValue(
+      frkrraDestination.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkbrOriginValue(
+      frkBr_Origin.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkbrDestinationValue(
+      frkBr_Destination.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setwcgrOriginValue(
+      w_cgr_Origin.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setwcgrDestinationValue(
+      w_cgr_Destination.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkcgrOriginValue(
+      frk_cgr_Origin.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkcgrDestinationValue(
+      frk_cgr_Destination.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkOriginValue(
+      frk_Origin.reduce((total, item) => total + item.Value, 0)
+    );
+
+    setfrkDestinationValue(
+      frk_Destination.reduce((total, item) => total + item.Value, 0)
+    );
   });
 
   const handleSolve = async () => {
     setDownloadMessage(false);
     if (
       riceOriginvalue < riceDestinationValue ||
-      wheatOriginValue < wheatDestinationValue
+      wheatOriginValue < wheatDestinationValue ||
+      coarseGrainOriginValue < coarseGrainDestinationValue ||
+      frkOriginValue < frkDestinationValue ||
+      frkcgrOriginValue < frkcgrDestinationValue ||
+      wcgrOriginValue < wcgrDestinationValue ||
+      frkrraOriginValue < frkrraDestinationValue ||
+      frkbrOriginValue < frkbrDestinationValue
     ) {
       alert("Destination indents more than Supply indents Please check");
       setIsLoading(false);
@@ -3343,7 +3409,6 @@ function Daily_Planner() {
                 </div>
               </div>
             </div>
-
             <br />
           </div>
         </div>
@@ -3398,6 +3463,72 @@ function Daily_Planner() {
               ) : null}
               {wheatDestinationValue > 0 ? (
                 <div>{`Destination Value of Wheat is ${wheatDestinationValue}`}</div>
+              ) : null}
+              {coarseGrainOriginValue > 0 ? (
+                <div
+                  style={{
+                    color:
+                      coarseGrainDestinationValue > coarseGrainOriginValue
+                        ? "red"
+                        : "",
+                  }}
+                >{`Supply Value of Coarse Grain is ${coarseGrainOriginValue}`}</div>
+              ) : null}
+              {coarseGrainDestinationValue > 0 ? (
+                <div>{`Supply Value of Coarse Grain is ${coarseGrainDestinationValue}`}</div>
+              ) : null}
+              {frkrraOriginValue > 0 ? (
+                <div
+                  style={{
+                    color:
+                      frkrraDestinationValue > frkrraOriginValue ? "red" : "",
+                  }}
+                >{`Supply Value of FRK RRA is ${frkrraOriginValue}`}</div>
+              ) : null}
+              {frkrraDestinationValue > 0 ? (
+                <div>{`Supply Value of FRK RRA is ${frkrraDestinationValue}`}</div>
+              ) : null}
+              {frkbrOriginValue > 0 ? (
+                <div
+                  style={{
+                    color:
+                      frkbrDestinationValue > frkbrOriginValue ? "red" : "",
+                  }}
+                >{`Supply Value of FRK BR is ${frkbrOriginValue}`}</div>
+              ) : null}
+              {frkbrDestinationValue > 0 ? (
+                <div>{`Supply Value of FRK BR is ${frkbrDestinationValue}`}</div>
+              ) : null}
+              {wcgrOriginValue > 0 ? (
+                <div
+                  style={{
+                    color: wcgrDestinationValue > wcgrOriginValue ? "red" : "",
+                  }}
+                >{`Supply Value of W+CGR is ${wcgrOriginValue}`}</div>
+              ) : null}
+              {wcgrDestinationValue > 0 ? (
+                <div>{`Supply Value of W+CGR is ${wcgrDestinationValue}`}</div>
+              ) : null}
+              {frkcgrOriginValue > 0 ? (
+                <div
+                  style={{
+                    color:
+                      frkcgrDestinationValue > frkcgrOriginValue ? "red" : "",
+                  }}
+                >{`Supply Value of FRK+CGR is ${frkcgrOriginValue}`}</div>
+              ) : null}
+              {frkcgrDestinationValue > 0 ? (
+                <div>{`Supply Value of FRK+CGR is ${frkcgrDestinationValue}`}</div>
+              ) : null}
+              {frkOriginValue > 0 ? (
+                <div
+                  style={{
+                    color: frkDestinationValue > frkOriginValue ? "red" : "",
+                  }}
+                >{`Supply Value of FRK is ${frkOriginValue}`}</div>
+              ) : null}
+              {frkDestinationValue > 0 ? (
+                <div>{`Supply Value of FRK is ${frkDestinationValue}`}</div>
               ) : null}
             </div>
           </div>
