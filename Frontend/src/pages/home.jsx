@@ -5,10 +5,10 @@ function Home() {
   useEffect(() => {});
 
   return (
-    <div className="page-container" style={{ backgroundColor: "#ebab44b0"}}>
+    <div className="page-container" style={{ backgroundColor: "#E7A63D"}}>
       <Sidenav />
       <div className="page-content" style={{ backgroundImage: "url('static/img/home3.jpg')" , height:'100vh'}}>
-        <ul className="x-navigation x-navigation-horizontal x-navigation-panel" style={{ backgroundColor: "#ebab44b0"}}>
+        <ul className="x-navigation x-navigation-horizontal x-navigation-panel" style={{ backgroundColor: "#E7A63D"}}>
           <li className="xn-icon-button">
             <a href="#" className="x-navigation-minimize">
               <span className="fa fa-dedent" />

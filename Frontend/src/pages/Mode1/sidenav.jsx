@@ -1,7 +1,7 @@
 function Sidenav() {
   return (
     <div className="page-sidebar">
-      <ul className="x-navigation" style={{ backgroundColor: "#ebab44b0" }}>
+      <ul className="x-navigation" style={{ backgroundColor: "#E7A63D" }}>
         <li className="xn-logo">
           <a href="#">Admin Only</a>
           <a href="#" className="x-navigation-control"></a>

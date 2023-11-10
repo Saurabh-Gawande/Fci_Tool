@@ -117,8 +117,11 @@ function Login() {
               </div>
             </form>
           </div>
-          <div className="login-footer">
-            <div className="pull-left" style={{ color: "white" }}>
+          <div
+            className="login-footer"
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <div style={{ color: "white" }}>
               &copy; DEVELOPED BY IIT-DELHI v2.0
             </div>
           </div>

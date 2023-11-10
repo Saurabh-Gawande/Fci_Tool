@@ -299,7 +299,7 @@ function Template() {
   };
 
   return (
-    <div className="page-container" style={{ backgroundColor: "#ebab44b0" }}>
+    <div className="page-container" style={{ backgroundColor: "#E7A63D" , height:"100vh" }}>
       <Sidenav />
       <div
         className="page-content"
@@ -307,7 +307,7 @@ function Template() {
       >
         <ul
           className="x-navigation x-navigation-horizontal x-navigation-panel"
-          style={{ backgroundColor: "rgba(235, 171, 68, 0.69)" }}
+          style={{ backgroundColor: "#E7A63D" }}
         >
           <li className="xn-icon-button">
             <a href="#" className="x-navigation-minimize">
@@ -599,7 +599,7 @@ function Template() {
                       <span
                         className="input-group-addon"
                         style={{
-                          backgroundColor: "rgba(235, 171, 68, 0.69)",
+                          backgroundColor: "orange",
                         }}
                       >
                         <span className="fa fa-info" />

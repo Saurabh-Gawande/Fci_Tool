@@ -115,7 +115,7 @@ function Alternate_Railhead() {
   };
 
   return (
-    <div className="page-container" style={{ backgroundColor: "#ebab44b0" }}>
+    <div className="page-container" style={{ backgroundColor: "#E7A63D" }}>
       <Sidenav />
       <div
         className="page-content"
@@ -126,7 +126,7 @@ function Alternate_Railhead() {
       >
         <ul
           className="x-navigation x-navigation-horizontal x-navigation-panel"
-          style={{ backgroundColor: "rgba(235, 171, 68, 0.69)" }}
+          style={{ backgroundColor: "#E7A63D" }}
         >
           <li className="xn-icon-button">
             <a href="#" className="x-navigation-minimize">

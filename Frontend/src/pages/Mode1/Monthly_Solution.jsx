@@ -329,7 +329,7 @@ function Monthly_Solution() {
   // fetchReservationId_cost();
 
   return (
-    <div className="page-container" style={{ backgroundColor: "#ebab44b0" }}>
+    <div className="page-container" style={{ backgroundColor: "#E7A63D" }}>
       <Sidenav />
       <div
         className="page-content"
@@ -341,7 +341,7 @@ function Monthly_Solution() {
         <div>
           <ul
             className="x-navigation x-navigation-horizontal x-navigation-panel"
-            style={{ backgroundColor: "rgba(235, 171, 68, 0.69)" }}
+            style={{ backgroundColor: "#E7A63D" }}
           >
             <li className="xn-icon-button">
               <a href="#" className="x-navigation-minimize">
@@ -396,7 +396,7 @@ function Monthly_Solution() {
                             <span
                               className="input-group-addon"
                               style={{
-                                backgroundColor: "rgba(235, 171, 68, 0.69)",
+                                backgroundColor: "orange",
                               }}
                             >
                               <span className="fa fa-info" />
@@ -665,20 +665,20 @@ function Monthly_Solution() {
             <br />
           </div>
         </div>
-        <div style={{ backgroundColor: "#ebab44b0", width: "20%" }}>
+        <div style={{ backgroundColor: "#E7A63D", width: "20%" , height:"100vh" }}>
           <br />
           <div>
-            <div class="progress yellow">
-              <span class="progress-left">
+            {/* <div class="progress yellow"> */}
+              {/* <span class="progress-left">
                 <span class="progress-bar"></span>
-              </span>
-              <span class="progress-right">
+              </span> */}
+              {/* <span class="progress-right">
                 <span class="progress-bar"></span>
-              </span>
-              <div class="progress-value">Steps</div>
-            </div>
+              </span> */}
+              {/* <div class="progress-value">Steps</div> */}
+            {/* </div> */}
           </div>
-          <span style={{ color: "black", fontSize: "32px", marginLeft: "5%" }}>
+          <span style={{ color: "black", fontSize: "32px", marginLeft: "15%" }}>
             Progress Bar
           </span>
           <div>
