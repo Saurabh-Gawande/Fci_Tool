@@ -475,8 +475,6 @@ function Daily_Planner() {
     updatedDeficitInline.splice(index, 1);
     setDeficitInline(updatedDeficitInline);
   };
-  
-
 
   const handleFileUpload = () => {
     if (selectedFile) {
@@ -1735,7 +1733,17 @@ function Daily_Planner() {
                           ))}
                         </tbody>
                       </table>
-                      For Inline Origin
+                      <p style={{ margin: 2, padding: 0, marginTop: 15 }}>
+                        <strong
+                          style={{
+                            color: "#9d0921",
+                            fontSize: "20px",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          For Inline Origin:
+                        </strong>
+                      </p>
                       <div
                         style={{
                           display: "flex",
@@ -1900,7 +1908,7 @@ function Daily_Planner() {
                           Add
                         </button>
                       </div>
-                      <table style={{ width: "60vw" }}>
+                      <table style={{ width: "60vw", marginTop: 20 }}>
                         <thead>
                           <tr>
                             <th>Sno</th>
@@ -1938,7 +1946,10 @@ function Daily_Planner() {
                                         fontSize: "1.2rem",
                                       }}
                                       onClick={() =>
-                                        handleDeleteRowInline_deficit__dest(row, index)
+                                        handleDeleteRowInline_deficit__dest(
+                                          row,
+                                          index
+                                        )
                                       }
                                       title="Delete"
                                     >
@@ -1950,7 +1961,18 @@ function Daily_Planner() {
                             })}
                         </tbody>
                       </table>
-                      For Inline Destination
+
+                      <p style={{ margin: 2, padding: 0, marginTop: 20 }}>
+                        <strong
+                          style={{
+                            color: "#9d0921",
+                            fontSize: "20px",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          For Inline Destination:
+                        </strong>
+                      </p>
                       <div
                         style={{
                           display: "flex",
@@ -2115,7 +2137,7 @@ function Daily_Planner() {
                           Add
                         </button>
                       </div>
-                      <table style={{ width: "60vw" }}>
+                      <table style={{ width: "60vw", marginTop: 20 }}>
                         <thead>
                           <tr>
                             <th>Sno</th>
@@ -2152,7 +2174,10 @@ function Daily_Planner() {
                                         fontSize: "1.2rem",
                                       }}
                                       onClick={() =>
-                                        handleDeleteRow_deficitInline__dest(row, index)
+                                        handleDeleteRow_deficitInline__dest(
+                                          row,
+                                          index
+                                        )
                                       }
                                       title="Delete"
                                     >

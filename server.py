@@ -1093,7 +1093,7 @@ def Monthly_Solution():
             
 
             prob.writeLP("Output\\FCI_monthly_model_allocation_rr.lp")
-            prob.solve()
+            prob.solve(CPLEX())
             print("Status:", LpStatus[prob.status])
             print("Minimum Cost of Transportation = Rs.", value(prob.objective),"Lakh")
             print("Total Number of Variables:",len(prob.variables()))
