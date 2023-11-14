@@ -465,6 +465,18 @@ function Daily_Planner() {
     updatedDeficit.splice(index, 1);
     setDeficit(updatedDeficit);
   };
+  const handleDeleteRowInline_deficit__dest = (index) => {
+    const updatedSurplusInline = [...surplusInline];
+    updatedSurplusInline.splice(index, 1);
+    setSurplusInline(updatedSurplusInline);
+  };
+  const handleDeleteRow_deficitInline__dest = (index) => {
+    const updatedDeficitInline = [...deficitInline];
+    updatedDeficitInline.splice(index, 1);
+    setDeficitInline(updatedDeficitInline);
+  };
+  
+
 
   const handleFileUpload = () => {
     if (selectedFile) {
@@ -1925,9 +1937,9 @@ function Daily_Planner() {
                                         color: "#ff0000",
                                         fontSize: "1.2rem",
                                       }}
-                                      // onClick={() =>
-                                      //   handleDeleteRow_deficit__dest(row, index)
-                                      // }
+                                      onClick={() =>
+                                        handleDeleteRowInline_deficit__dest(row, index)
+                                      }
                                       title="Delete"
                                     >
                                       &times;
@@ -2139,9 +2151,9 @@ function Daily_Planner() {
                                         color: "#ff0000",
                                         fontSize: "1.2rem",
                                       }}
-                                      // onClick={() =>
-                                      //   handleDeleteRow_deficit__dest(row, index)
-                                      // }
+                                      onClick={() =>
+                                        handleDeleteRow_deficitInline__dest(row, index)
+                                      }
                                       title="Delete"
                                     >
                                       &times;
