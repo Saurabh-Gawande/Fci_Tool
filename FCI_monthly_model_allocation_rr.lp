@@ -1,20 +1,26 @@
 \* FCI_monthly_model_allocation_rr *\
 Minimize
-OBJ: 1152.7 x_rra_('ARA',_'AGS') + 1209.9 x_rra_('ARA',_'KBJ')
- + 2263.7 x_rra_('VSG',_'AGS') + 2043.2 x_rra_('VSG',_'KBJ')
+OBJ: 2241.1 x_frk_('DMC',_'JNP') + 2708.9 x_frk_('DMC',_'KMC')
+ + 1095.5 x_frk_('G',_'JNP') + 806.4 x_frk_('G',_'KMC')
+ + 599.7 x_frk_('JFAI',_'JNP') + 1441.3 x_frk_('JFAI',_'KMC')
 Subject To
-_C1: x_rra_('VSG',_'AGS') + x_rra_('VSG',_'KBJ') <= 3
-_C2: x_rra_('ARA',_'AGS') + x_rra_('ARA',_'KBJ') <= 5
-_C3: x_rra_('ARA',_'AGS') + x_rra_('VSG',_'AGS') >= 1
-_C4: x_rra_('ARA',_'KBJ') + x_rra_('VSG',_'KBJ') >= 3
+_C1: x_frk_('DMC',_'JNP') + x_frk_('DMC',_'KMC') <= 1
+_C2: x_frk_('JFAI',_'JNP') + x_frk_('JFAI',_'KMC') <= 1
+_C3: x_frk_('G',_'JNP') + x_frk_('G',_'KMC') <= 1
+_C4: x_frk_('DMC',_'JNP') + x_frk_('G',_'JNP') + x_frk_('JFAI',_'JNP') >= 1
+_C5: x_frk_('DMC',_'KMC') + x_frk_('G',_'KMC') + x_frk_('JFAI',_'KMC') >= 2
 Bounds
- x_rra_('ARA',_'AGS') free
- x_rra_('ARA',_'KBJ') free
- x_rra_('VSG',_'AGS') free
- x_rra_('VSG',_'KBJ') free
+ x_frk_('DMC',_'JNP') free
+ x_frk_('DMC',_'KMC') free
+ x_frk_('G',_'JNP') free
+ x_frk_('G',_'KMC') free
+ x_frk_('JFAI',_'JNP') free
+ x_frk_('JFAI',_'KMC') free
 Generals
-x_rra_('ARA',_'AGS')
-x_rra_('ARA',_'KBJ')
-x_rra_('VSG',_'AGS')
-x_rra_('VSG',_'KBJ')
+x_frk_('DMC',_'JNP')
+x_frk_('DMC',_'KMC')
+x_frk_('G',_'JNP')
+x_frk_('G',_'KMC')
+x_frk_('JFAI',_'JNP')
+x_frk_('JFAI',_'KMC')
 End

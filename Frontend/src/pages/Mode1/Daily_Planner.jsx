@@ -3,13 +3,16 @@ import Sidenav from "./sidenav";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import config from "../../config";
+import jsPDF from "jspdf";
 // import style from "./Daily_Planner.css";
 // import Surplus from "./Surplus";
 
 function Daily_Planner() {
   //---------------------------------------------------------------------------------------------
   const [surplus, setSurplus] = useState([]);
+  const [surplusInline, setSurplusInline] = useState([]);
   const [deficit, setDeficit] = useState([]);
+  const [deficitInline, setDeficitInline] = useState([]);
 
   const [surplusState, setSurplusState] = useState();
   const [totalSurplusRailhead, setTotalSurplusRailhead] = useState([]);
@@ -23,25 +26,28 @@ function Daily_Planner() {
   const [deficitValue, setDeficitValue] = useState(1);
   const [deficitCommodity, setDeficitCommodity] = useState();
 
-  const [surplusInlineState, setSurplusInlineState] = useState();
-  const [surplusInlineRailhead, setSurplusInlineRailhead] = useState();
-  const [surplusInlineCommodity, setSurplusInlineCommodity] = useState();
-  const [totalSurplusInlineRailhead, setTotalSurplusInlineRailhead] = useState(
-    []
-  );
+  const [surplusInlineState1, setSurplusInlineState1] = useState();
+  const [surplusInlineRailhead1, setSurplusInlineRailhead1] = useState();
+  const [totalSurplusInlineRailhead1, setTotalSurplusInlineRailhead1] =
+    useState([]);
+  const [surplusInlineState2, setSurplusInlineState2] = useState();
+  const [surplusInlineRailhead2, setSurplusInlineRailhead2] = useState();
+  const [totalSurplusInlineRailhead2, setTotalSurplusInlineRailhead2] =
+    useState([]);
+  const [surplusInlineCommodity1, setSurplusInlineCommodity1] = useState();
 
-  const [deficitInlineState, setDeficitInlineState] = useState();
-  const [totalDeficitInlineRailhead, setTotalDeficitInlineRailhead] = useState(
-    []
-  );
+  const [deficitInlineState1, setDeficitInlineState1] = useState();
+  const [deficitInlineRailhead1, setDeficitInlineRailhead1] = useState();
+  const [totalDeficitInlineRailhead1, setTotalDeficitInlineRailhead1] =
+    useState([]);
+  const [deficitInlineState2, setDeficitInlineState2] = useState();
+  const [deficitInlineRailhead2, setDeficitInlineRailhead2] = useState();
+  const [totalDeficitInlineRailhead2, setTotalDeficitInlineRailhead2] =
+    useState([]);
+  const [deficitInlineCommodity, setDeficitInlineCommodity] = useState();
   //----------------------------------------------------------------------------------------------------------
   const ProjectIp = config.serverUrl;
-  const [fileSelected, setFileSelected] = useState(false);
   const [inline_value_rice, setInlineValueRice] = useState("");
-  const [origin_value_rice, setOriginValueRice] = useState("");
-  const [dest_value_rice, setDestValueRice] = useState("");
-  const [origin_value_wheat, setOriginValueWheat] = useState("");
-  const [dest_value_wheat, setDestValueWheat] = useState("");
   const [inline_value_wheat, setInlineValueWheat] = useState("");
   const [block_data, setBlockdata] = useState([]);
   const [block_data2, setBlockdata2] = useState([]);
@@ -55,32 +61,10 @@ function Daily_Planner() {
   const [subOptions, setSubOptions] = useState([]);
   const [selectedOption2, setSelectedOption2] = useState("default");
   const [subOptions2, setSubOptions2] = useState([]);
-  const [selectedOption3, setSelectedOption3] = useState("default");
-  const [subOptions3, setSubOptions3] = useState([]);
-  const [selectedOptionWheat3, setSelectedOptionWheat3] = useState("default");
-  const [subOptionsWheat3, setSubOptionsWheat3] = useState([]);
-  const [selectedOption4, setSelectedOption4] = useState("default");
-  const [subOptions4, setSubOptions4] = useState([]);
-  const [selectedOptionWheat4, setSelectedOptionWheat4] = useState("default");
-  const [subOptionsWheat4, setSubOptionsWheat4] = useState([]);
-  const [selectedOption5, setSelectedOption5] = useState("default");
-  const [subOptions5, setSubOptions5] = useState([]);
-  const [selectedOption6, setSelectedOption6] = useState("default");
-  const [subOptions6, setSubOptions6] = useState([]);
   const [selectedOptionWheat5, setSelectedOptionWheat5] = useState("default");
   const [subOptionsWheat5, setSubOptionsWheat5] = useState([]);
-  const [selectedOptionWheat6, setSelectedOptionWheat6] = useState("default");
-  const [subOptionsWheat6, setSubOptionsWheat6] = useState([]);
   const [subOption1, setSubOption1] = useState("");
   const [subOption2, setSubOption2] = useState("");
-  const [subOption3, setSubOption3] = useState("");
-  const [subOptionWheat3, setSubOptionWheat3] = useState("");
-  const [subOption4, setSubOption4] = useState("");
-  const [subOptionWheat4, setSubOptionWheat4] = useState("");
-  const [subOption5, setSubOption5] = useState("");
-  const [subOption6, setSubOption6] = useState("");
-  const [subOptionWheat5, setSubOptionWheat5] = useState("");
-  const [subOptionWheat6, setSubOptionWheat6] = useState("");
   const [selectedOption_fixed, setSelectedOption_fixed] = useState("default");
   const [subOptions_fixed, setSubOptions_fixed] = useState([]);
   const [selectedOption2_fixed, setSelectedOption2_fixed] = useState("default");
@@ -101,12 +85,6 @@ function Daily_Planner() {
   const [updateExcel, setUpdateExcel] = useState(false);
   const [updateExcel2, setUpdateExcel2] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoading2, setIsLoading2] = useState(false);
-  const [isLoading3, setIsLoading3] = useState(false);
-  const [number_check1, setnumber_check1] = useState(0);
-  const [number_check2, setnumber_check2] = useState(0);
-  const [supplyWeatCount, setSupplyWeatCount] = useState(0);
-  const [destinationWheatCount, setDestinationWheatCount] = useState(0);
   const [showMessage, setShowMessage] = useState(false);
   const [riceData, setRiceData] = useState(false);
   const [wheatData, setWheatData] = useState(false);
@@ -143,7 +121,6 @@ function Daily_Planner() {
   const [frkOriginValue, setfrkOriginValue] = useState();
   const [frkDestinationValue, setfrkDestinationValue] = useState();
   // ---------------------------------------------------------------------------------------
-
   const processSheetData = (workbook, sheetIndices) => {
     const jsonData = [];
     sheetIndices.forEach((sheetIndex) => {
@@ -244,40 +221,9 @@ function Daily_Planner() {
     setTotalDeficitRailhead(dropdownOptions);
   };
 
-  // const handleSurplusInlineStateChange = async (e) => {
-  //   const selectedValue = e.target.value;
-  //   setSurplusInlineState(selectedValue);
-  //   const response = await fetch("/data/Updated_railhead_list.xlsx");
-  //   const arrayBuffer = await response.arrayBuffer();
-  //   const data = new Uint8Array(arrayBuffer);
-  //   const workbook = XLSX.read(data, { type: "array" });
-  //   const sheetName = workbook.SheetNames[0];
-  //   const sheet = workbook.Sheets[sheetName];
-  //   const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-  //   let dropdownOptions = [];
-  //   let dropdownOptions_default = {
-  //     value: "",
-  //     label: "Please select Railhead",
-  //   };
-  //   for (let i = 0; i < jsonData.length; i++) {
-  //     if (
-  //       jsonData[i][1] &&
-  //       jsonData[i][1].trim().toLowerCase() ===
-  //         selectedValue.trim().toLowerCase()
-  //     ) {
-  //       dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-  //     }
-  //   }
-  //   dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-  //   dropdownOptions.unshift(dropdownOptions_default);
-  //   setTotalSurplusInlineRailhead(dropdownOptions);
-  // };
-
-  // const AddSurplusInline = async (e) => {};
-
-  const handleDefictInlineStateChange = async (e) => {
+  const handleSurplusInlineState1Change = async (e) => {
     const selectedValue = e.target.value;
-    setDeficitInlineState(selectedValue);
+    setSurplusInlineState1(selectedValue);
     const response = await fetch("/data/Updated_railhead_list.xlsx");
     const arrayBuffer = await response.arrayBuffer();
     const data = new Uint8Array(arrayBuffer);
@@ -301,7 +247,141 @@ function Daily_Planner() {
     }
     dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
     dropdownOptions.unshift(dropdownOptions_default);
-    setTotalDeficitInlineRailhead(dropdownOptions);
+    setTotalSurplusInlineRailhead1(dropdownOptions);
+  };
+  const handleDeficitInlineState1Change = async (e) => {
+    const selectedValue = e.target.value;
+    setDeficitInlineState1(selectedValue);
+    const response = await fetch("/data/Updated_railhead_list.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    let dropdownOptions = [];
+    let dropdownOptions_default = {
+      value: "",
+      label: "Please select Railhead",
+    };
+    for (let i = 0; i < jsonData.length; i++) {
+      if (
+        jsonData[i][1] &&
+        jsonData[i][1].trim().toLowerCase() ===
+          selectedValue.trim().toLowerCase()
+      ) {
+        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
+      }
+    }
+    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
+    dropdownOptions.unshift(dropdownOptions_default);
+    setTotalDeficitInlineRailhead1(dropdownOptions);
+  };
+
+  const handleSurplusInlineState2Change = async (e) => {
+    const selectedValue = e.target.value;
+    setSurplusInlineState2(selectedValue);
+    const response = await fetch("/data/Updated_railhead_list.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    let dropdownOptions = [];
+    let dropdownOptions_default = {
+      value: "",
+      label: "Please select Railhead",
+    };
+    for (let i = 0; i < jsonData.length; i++) {
+      if (
+        jsonData[i][1] &&
+        jsonData[i][1].trim().toLowerCase() ===
+          selectedValue.trim().toLowerCase()
+      ) {
+        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
+      }
+    }
+    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
+    dropdownOptions.unshift(dropdownOptions_default);
+    setTotalSurplusInlineRailhead2(dropdownOptions);
+  };
+
+  const handleDeficitInlineState2Change = async (e) => {
+    const selectedValue = e.target.value;
+    setDeficitInlineState2(selectedValue);
+    const response = await fetch("/data/Updated_railhead_list.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    let dropdownOptions = [];
+    let dropdownOptions_default = {
+      value: "",
+      label: "Please select Railhead",
+    };
+    for (let i = 0; i < jsonData.length; i++) {
+      if (
+        jsonData[i][1] &&
+        jsonData[i][1].trim().toLowerCase() ===
+          selectedValue.trim().toLowerCase()
+      ) {
+        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
+      }
+    }
+    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
+    dropdownOptions.unshift(dropdownOptions_default);
+    setTotalDeficitInlineRailhead2(dropdownOptions);
+  };
+
+  const AddSurplusInline = async (e) => {
+    e.preventDefault();
+    setSurplusInline((prev) => [
+      ...prev,
+      {
+        Sno: Math.floor(Math.random() * 500) + 1,
+        origin_railhead: surplusInlineRailhead1,
+        origin_state: surplusInlineState1,
+        Value: 1,
+        Commodity: surplusInlineCommodity1,
+      },
+    ]);
+    setSurplusInline((prev) => [
+      ...prev,
+      {
+        Sno: Math.floor(Math.random() * 500) + 1,
+        origin_railhead: surplusInlineRailhead2,
+        origin_state: surplusInlineState2,
+        Value: 1,
+        Commodity: surplusInlineCommodity1,
+      },
+    ]);
+  };
+
+  const AddDeficitInline = async (e) => {
+    e.preventDefault();
+    setDeficitInline((prev) => [
+      ...prev,
+      {
+        Sno: Math.floor(Math.random() * 500) + 1,
+        origin_railhead: deficitInlineRailhead1,
+        origin_state: deficitInlineState1,
+        Value: 1,
+        Commodity: deficitInlineCommodity,
+      },
+    ]);
+    setDeficitInline((prev) => [
+      ...prev,
+      {
+        Sno: Math.floor(Math.random() * 500) + 1,
+        origin_railhead: deficitInlineRailhead2,
+        origin_state: deficitInlineState2,
+        Value: 1,
+        Commodity: deficitInlineCommodity,
+      },
+    ]);
   };
 
   const AddSurplus = (e) => {
@@ -368,38 +448,6 @@ function Daily_Planner() {
     setDeficitCommodity("");
   };
 
-  const handleOptimizePlan = async (e) => {
-    e.preventDefault();
-    const requestBody = {
-      surplus: surplus,
-      deficit: deficit,
-    };
-
-    try {
-      const response = await fetch(ProjectIp + "/surplus_deficit_data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.status === 200) {
-        const jsonResponse = await response.json();
-        if (jsonResponse.status === 1) {
-          alert("Data send to Backend");
-        } else {
-          alert("Error uploading file");
-        }
-      } else {
-        alert("Failed to send data. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error sending data:", error);
-      alert("An error occurred. Please try again later.");
-    }
-  };
   //---------------------------------------------------------------------------------------------------
 
   const handleFileChange_ = (event) => {
@@ -439,8 +487,6 @@ function Daily_Planner() {
       alert("Please select a file before uploading.");
     }
   };
-
-  const [addedRailheads, setAddedRailheads] = useState(new Set());
 
   const handleCellChange = (sheetName, rowIndex, columnIndex, newValue) => {
     const updatedData = { ...excelData };
@@ -557,40 +603,121 @@ function Daily_Planner() {
   useEffect(() => {
     getCommodityData();
   }, []);
-  const riceOrigin = surplus.filter((item) => item.Commodity === "RRA");
-  const riceDestination = deficit.filter((item) => item.Commodity === "RRA");
 
-  const wheatOrigin = surplus.filter((item) => item.Commodity === "Wheat");
-  const wheatDestination = deficit.filter((item) => item.Commodity === "Wheat");
+  const riceOrigin1 = surplus.filter((item) => item.Commodity === "RRA");
+  const riceInlineOrigin = surplusInline.filter(
+    (item) => item.Commodity === "RRA"
+  );
+  const riceOrigin = riceOrigin1.concat(riceInlineOrigin);
 
-  const coarseGrainOrigin = surplus.filter(
+  const riceDestination1 = deficit.filter((item) => item.Commodity === "RRA");
+  const riceInlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "RRA"
+  );
+  const riceDestination = riceDestination1.concat(riceInlineDestination);
+
+  const wheatOrigin1 = surplus.filter((item) => item.Commodity === "Wheat");
+  const wheatInlineOrigin = surplusInline.filter(
+    (item) => item.Commodity === "Wheat"
+  );
+  const wheatOrigin = wheatOrigin1.concat(wheatInlineOrigin);
+
+  const wheatDestination1 = deficit.filter(
+    (item) => item.Commodity === "Wheat"
+  );
+  const wheatInlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "Wheat"
+  );
+  const wheatDestination = wheatDestination1.concat(wheatInlineDestination);
+
+  const coarseGrainOrigin1 = surplus.filter(
     (item) => item.Commodity === "Coarse Grain"
   );
-  const coarseGrainDestination = deficit.filter(
+  const coarseInlineGrainOrigin = surplusInline.filter(
     (item) => item.Commodity === "Coarse Grain"
   );
+  const coarseGrainOrigin = coarseGrainOrigin1.concat(coarseInlineGrainOrigin);
 
-  const frkrraOrigin = surplus.filter((item) => item.Commodity === "FRK RRA");
-  const frkrraDestination = deficit.filter(
+  const coarseGrainDestination1 = deficit.filter(
+    (item) => item.Commodity === "Coarse Grain"
+  );
+  const coarseGrainInlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "Coarse Grain"
+  );
+  const coarseGrainDestination = coarseGrainDestination1.concat(
+    coarseGrainInlineDestination
+  );
+
+  const frkrraOrigin1 = surplus.filter((item) => item.Commodity === "FRK RRA");
+  const frkrraInlineOrigin = surplusInline.filter(
     (item) => item.Commodity === "FRK RRA"
   );
+  const frkrraOrigin = frkrraOrigin1.concat(frkrraInlineOrigin);
 
-  const frkBr_Origin = surplus.filter((item) => item.Commodity === "FRK BR");
-  const frkBr_Destination = deficit.filter(
+  const frkrraDestination1 = deficit.filter(
+    (item) => item.Commodity === "FRK RRA"
+  );
+  const frkrraInlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "FRK RRA"
+  );
+  const frkrraDestination = frkrraDestination1.concat(frkrraInlineDestination);
+
+  const frkBr_Origin1 = surplus.filter((item) => item.Commodity === "FRK BR");
+  const frkBr_InlineOrigin = surplusInline.filter(
     (item) => item.Commodity === "FRK BR"
   );
+  const frkBr_Origin = frkBr_Origin1.concat(frkBr_InlineOrigin);
 
-  const frk_Origin = surplus.filter((item) => item.Commodity === "FRK");
-  const frk_Destination = deficit.filter((item) => item.Commodity === "FRK");
+  const frkBr_Destination1 = deficit.filter(
+    (item) => item.Commodity === "FRK BR"
+  );
+  const frkBr_InlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "FRK BR"
+  );
+  const frkBr_Destination = frkBr_Destination1.concat(frkBr_InlineDestination);
 
-  const w_cgr_Origin = surplus.filter((item) => item.Commodity === "W+CGR");
-  const w_cgr_Destination = deficit.filter(
+  const frk_Origin1 = surplus.filter((item) => item.Commodity === "FRK");
+  const frk_InlineOrigin = surplusInline.filter(
+    (item) => item.Commodity === "FRK"
+  );
+  const frk_Origin = frk_Origin1.concat(frk_InlineOrigin);
+
+  const frk_Destination1 = deficit.filter((item) => item.Commodity === "FRK");
+  const frk_InlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "FRK"
+  );
+  const frk_Destination = frk_Destination1.concat(frk_InlineDestination);
+
+  const w_cgr_Origin1 = surplus.filter((item) => item.Commodity === "W+CGR");
+  const w_cgr_InlineOrigin = surplusInline.filter(
     (item) => item.Commodity === "W+CGR"
   );
+  const w_cgr_Origin = w_cgr_Origin1.concat(w_cgr_InlineOrigin);
 
-  const frk_cgr_Origin = surplus.filter((item) => item.Commodity === "FRK+CGR");
-  const frk_cgr_Destination = deficit.filter(
+  const w_cgr_Destination1 = deficit.filter(
+    (item) => item.Commodity === "W+CGR"
+  );
+  const w_cgr_InlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "W+CGR"
+  );
+  const w_cgr_Destination = w_cgr_Destination1.concat(w_cgr_InlineDestination);
+
+  const frk_cgr_Origin1 = surplus.filter(
     (item) => item.Commodity === "FRK+CGR"
+  );
+  const frk_cgr_InlineOrigin = surplusInline.filter(
+    (item) => item.Commodity === "FRK+CGR"
+  );
+  const frk_cgr_Origin = frk_cgr_Origin1.concat(frk_cgr_InlineOrigin);
+
+  const frk_cgr_Destination1 = deficit.filter(
+    (item) => item.Commodity === "FRK+CGR"
+  );
+  const frk_cgr_InlineDestination = deficitInline.filter(
+    (item) => item.Commodity === "FRK+CGR"
+  );
+  const frk_cgr_Destination = frk_cgr_Destination1.concat(
+    frk_cgr_InlineDestination
   );
 
   useEffect(() => {
@@ -658,6 +785,7 @@ function Daily_Planner() {
   });
 
   const handleSolve = async () => {
+    setShowMessage(false);
     setDownloadMessage(false);
     if (
       riceOriginvalue < riceDestinationValue ||
@@ -676,11 +804,6 @@ function Daily_Planner() {
     }
     if (isLoading) return;
     setIsLoading(true);
-
-    if (Scenerio == "Scenerio 2") {
-      setscn(true);
-      setuploadst(true);
-    }
 
     const payload = {
       TEFD: TEFD,
@@ -853,144 +976,38 @@ function Daily_Planner() {
     setSubOptions2(dropdownOptions);
   };
 
-  const handleDropdownChangeWheat5 = async (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOptionWheat5(selectedValue);
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    // Assuming the Excel file has only one sheet
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    // Parse the sheet data into JSON format
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    let dropdownOptions = [];
-    let dropdownOptions_default = {
-      value: "",
-      label: "Please select Railhead",
-    };
-    for (let i = 0; i < jsonData.length; i++) {
-      if (jsonData[i][1] === selectedValue) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-    // dropdownOptions=dropdownOptions_default+dropdownOptions;
-    dropdownOptions.unshift(dropdownOptions_default);
-    setSubOptionsWheat5(dropdownOptions);
-  };
-
-  const handleDropdownChange6 = async (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOption6(selectedValue);
-
-    // Check if the railhead for the selected state is already added
-    if (!addedRailheads.has(selectedValue)) {
-      const response = await fetch("/data/Updated_railhead_list.xlsx");
-      const arrayBuffer = await response.arrayBuffer();
-      const data = new Uint8Array(arrayBuffer);
-
-      const workbook = XLSX.read(data, { type: "array" });
-
-      // Assuming the Excel file has only one sheet
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-
-      // Parse the sheet data into JSON format
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      let dropdownOptions = [];
-      let dropdownOptions_default = {
-        value: "",
-        label: "Please select Railhead",
-      };
-      for (let i = 0; i < jsonData.length; i++) {
-        if (jsonData[i][1] == selectedValue) {
-          dropdownOptions.push({
-            value: jsonData[i][0],
-            label: jsonData[i][0],
-          });
-        }
-      }
-      dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-      dropdownOptions.unshift(dropdownOptions_default);
-      setSubOptions6(dropdownOptions);
-
-      // Add the railhead to the set to indicate it's added for this state
-      setAddedRailheads(new Set(addedRailheads).add(selectedValue));
+  const exportToPDF = () => {
+    if (Total_result == null) {
+      window.alert("Fetching Result, Please Wait");
+      fetchReservationId_Total_result();
     } else {
-      // Alert message if the railhead is already added for this state
-      alert(`Railhead for ${selectedValue} is already added.`);
+      const pdfDoc = new jsPDF();
+      const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+      Object.entries(Total_result).forEach(([column, data]) => {
+        const parsedData = JSON.parse(data);
+
+        pdfDoc.addPage();
+        pdfDoc.text(`Column: ${column}`, 10, 10);
+
+        // Display data from the column below the header
+        let yPos = 20;
+        parsedData.forEach((item) => {
+          const formattedData = formatData(item);
+          pdfDoc.text(formattedData, 10, yPos, { maxWidth: 180 });
+          yPos +=
+            pdfDoc.splitTextToSize(formattedData, { maxWidth: 180 }).length *
+              10 +
+            5;
+        });
+      });
+
+      pdfDoc.save(`Railhead_data_${timestamp}.pdf`);
     }
   };
 
-  const handleDropdownChangeWheat6 = async (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOptionWheat6(selectedValue);
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    // Assuming the Excel file has only one sheet
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    // Parse the sheet data into JSON format
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    let dropdownOptions = [];
-    let dropdownOptions_default = {
-      value: "",
-      label: "Please select Railhead",
-    };
-    for (let i = 0; i < jsonData.length; i++) {
-      if (jsonData[i][1] == selectedValue) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-    // dropdownOptions=dropdownOptions_default+dropdownOptions;
-    dropdownOptions.unshift(dropdownOptions_default);
-    setSubOptionsWheat6(dropdownOptions);
-  };
-
-  const handleDropdownChange4 = async (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOption4(selectedValue);
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    // Assuming the Excel file has only one sheet
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    // Parse the sheet data into JSON format
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    let dropdownOptions = [];
-    let dropdownOptions_default = {
-      value: "",
-      label: "Please select Railhead",
-    };
-    for (let i = 0; i < jsonData.length; i++) {
-      if (
-        jsonData[i][1] &&
-        jsonData[i][1].trim().toLowerCase() ===
-          selectedValue.trim().toLowerCase()
-      ) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-    // dropdownOptions=dropdownOptions_default+dropdownOptions;
-    dropdownOptions.unshift(dropdownOptions_default);
-    setSubOptions4(dropdownOptions);
+  // Function to format data with line breaks
+  const formatData = (item) => {
+    return `From: ${item.From}\nFrom State: ${item["From State"]}\nTo: ${item.To}\nTo State: ${item["To State"]}\nCommodity: ${item.Commodity}`;
   };
 
   const handleSubDropdownChange1 = (e) => {
@@ -1123,340 +1140,6 @@ function Daily_Planner() {
     }
   };
 
-  const addConstraint2 = async (e) => {
-    e.preventDefault();
-
-    // Check if necessary options are selected
-    if (selectedOption5 && subOption5 && selectedOption6 && subOption6) {
-      // Check if the origin and destination railheads are the same
-      if (selectedOption5 === selectedOption6 && subOption5 === subOption6) {
-        alert("Origin and destination railheads cannot be the same.");
-        return; // Do not proceed further
-      }
-
-      // Update block data with the new constraint
-      setBlockdata2((data) => [
-        ...data,
-        {
-          origin_state: selectedOption5,
-          origin_railhead: subOption5,
-          destination_state: selectedOption6,
-          destination_railhead: subOption6,
-          id: Date.now(),
-        },
-      ]);
-
-      // Reset options and suboptions for rice
-      setSelectedOption5("default");
-      setSelectedOption6("default");
-      setSubOptions5([]);
-      setSubOptions6([]);
-
-      if (isLoading2) return; // Prevent additional clicks while loading
-      setIsLoading2(true);
-
-      try {
-        const payload1 = {
-          rice_inline: block_data2,
-          rice_inline_value: inline_value_rice,
-          wheat_inline: block_dataWheat2,
-          wheat_inline_value: inline_value_wheat,
-        };
-
-        const response2 = await fetch(ProjectIp + "/Daily_Planner_Check", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload1),
-        });
-
-        const responseData1 = await response2.json(); // Parse response JSON
-
-        if (responseData1.status === "NO") {
-          alert("Distance is not within range. Please check again.");
-        }
-      } catch (error) {
-        console.error("Error sending inputs:", error);
-      } finally {
-        // Reset loading state
-        setIsLoading2(false);
-      }
-    }
-
-    // Add progress message
-    setProgress((prev) => [
-      ...prev,
-      "New Inline details have been added for rice",
-    ]);
-  };
-
-  const addConstraintWheat2 = async (e) => {
-    e.preventDefault();
-
-    // Check if necessary options are selected
-    if (
-      selectedOptionWheat5 &&
-      subOptionWheat5 &&
-      selectedOptionWheat6 &&
-      subOptionWheat6
-    ) {
-      // Check if origin and destination railheads for wheat are the same
-      if (subOptionWheat5 === subOptionWheat6) {
-        alert("Origin and destination railheads for wheat cannot be the same.");
-        return; // Do not proceed further
-      }
-
-      // Update wheat block data with the new constraint
-      let data = [
-        {
-          origin_state: selectedOptionWheat5,
-          origin_railhead: subOptionWheat5,
-          destination_state: selectedOptionWheat6,
-          destination_railhead: subOptionWheat6,
-          id: Date.now(),
-        },
-      ];
-
-      setBlockdataWheat2((prevData) => [...prevData, ...data]);
-
-      // Reset options and suboptions for wheat
-      setSelectedOptionWheat5("default");
-      setSelectedOptionWheat6("default");
-      setSubOptionWheat5([]);
-      setSubOptionWheat6([]);
-
-      if (isLoading3) return; // Prevent additional clicks while loading
-      setIsLoading3(true);
-
-      try {
-        const payload1 = {
-          rice_inline: block_data2,
-          rice_inline_value: inline_value_rice,
-          wheat_inline: data,
-          wheat_inline_value: inline_value_wheat,
-        };
-
-        const response2 = await fetch(ProjectIp + "/Daily_Planner_Check", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload1),
-        });
-
-        const responseData1 = await response2.json(); // Parse response JSON
-
-        if (responseData1.status === "NO") {
-          alert("Distance is not within range. Please check again.");
-        }
-      } catch (error) {
-        console.error("Error sending inputs:", error);
-      } finally {
-        // Reset loading state
-        setIsLoading3(false);
-      }
-    }
-
-    // Add progress message
-    setProgress((prev) => [
-      ...prev,
-      "New Inline details have been added for wheat",
-    ]);
-  };
-
-  const addConstraint3 = async (e) => {
-    e.preventDefault();
-
-    if (selectedOption3 && subOption3) {
-      // Check if the railhead for the selected state is already added
-      if (!addedRailheads.has(subOption3)) {
-        setBlockdata3((data) => [
-          ...data,
-          {
-            origin_state: selectedOption3,
-            origin_railhead: subOption3,
-            origin_value: origin_value_rice,
-            id: Date.now(),
-          },
-        ]);
-
-        setnumber_check1(number_check1 + 1);
-
-        // Add the railhead to the set to indicate it's added for this state
-        setAddedRailheads(new Set(addedRailheads).add(subOption3));
-      } else {
-        alert(
-          `Railhead ${subOption3} is already added for ${selectedOption3}.`
-        );
-      }
-
-      setSubOptions3([]);
-    }
-
-    setSubOption3("");
-
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    const dropdownOptions = [
-      {
-        value: "",
-        label: "Please select Railhead",
-      },
-    ];
-
-    for (let i = 0; i < jsonData.length; i++) {
-      if (
-        jsonData[i][1] &&
-        jsonData[i][1].trim().toLowerCase() ===
-          selectedOption3.trim().toLowerCase()
-      ) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-
-    setSubOptions3(dropdownOptions);
-  };
-
-  const addConstraintWheat3 = async (e) => {
-    e.preventDefault();
-    if (selectedOptionWheat3 && subOptionWheat3) {
-      // Check if the railhead for the selected state is already added
-      if (!addedRailheads.has(subOptionWheat3)) {
-        setBlockdataWheat3((data) => [
-          ...data,
-          {
-            origin_state: selectedOptionWheat3,
-            origin_railhead: subOptionWheat3,
-            origin_value: origin_value_wheat,
-            id: Date.now(),
-          },
-        ]);
-
-        setSupplyWeatCount(supplyWeatCount + 1);
-
-        // Add the railhead to the set to indicate it's added for this state
-        setAddedRailheads(new Set(addedRailheads).add(subOptionWheat3));
-      } else {
-        // Alert message if the railhead is already added for this state
-        alert(
-          `Railhead ${subOptionWheat3} is already added for ${selectedOptionWheat3}.`
-        );
-      }
-
-      setSubOptionsWheat3([]);
-    }
-
-    setSubOptionWheat3("");
-
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    const dropdownOptions = [
-      {
-        value: "",
-        label: "Please select Railhead",
-      },
-    ];
-
-    for (let i = 0; i < jsonData.length; i++) {
-      if (
-        jsonData[i][1] &&
-        jsonData[i][1].trim().toLowerCase() ===
-          selectedOptionWheat3.trim().toLowerCase()
-      ) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-
-    setSubOptionsWheat3(dropdownOptions);
-  };
-
-  const addConstraint4 = async (e) => {
-    e.preventDefault();
-
-    if (selectedOption4 && subOption4) {
-      // Check if the railhead for the selected state is already added
-      if (!addedRailheads.has(subOption4)) {
-        setRiceDestination((data) => [
-          ...data,
-          {
-            origin_state: selectedOption4,
-            origin_railhead: subOption4,
-            origin_value: dest_value_rice,
-            id: Date.now(),
-          },
-        ]);
-
-        setnumber_check2(number_check2 + 1);
-
-        // Add the railhead to the set to indicate it's added for this state
-        setAddedRailheads(new Set(addedRailheads).add(subOption4));
-      } else {
-        alert(
-          `Railhead ${subOption4} is already added for ${selectedOption4}.`
-        );
-      }
-
-      setSubOptions4([]);
-    }
-
-    setSubOption4("");
-
-    const response = await fetch("/data/Updated_railhead_list.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const workbook = XLSX.read(data, { type: "array" });
-
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    const dropdownOptions = [
-      {
-        value: "",
-        label: "Please select Railhead",
-      },
-    ];
-
-    for (let i = 0; i < jsonData.length; i++) {
-      if (
-        jsonData[i][1] &&
-        jsonData[i][1].trim().toLowerCase() ===
-          selectedOption4.trim().toLowerCase()
-      ) {
-        dropdownOptions.push({ value: jsonData[i][0], label: jsonData[i][0] });
-      }
-    }
-
-    dropdownOptions.sort((a, b) => a.label.localeCompare(b.label));
-
-    setSubOptions4(dropdownOptions);
-  };
-
   const addConstraint_fixed = (e) => {
     e.preventDefault();
     if (
@@ -1549,30 +1232,6 @@ function Daily_Planner() {
       const dateAndTime = `${year}/${month}/${day}T${hours}/${minutes}/${seconds}`;
       const filenameWithDateTime = `Daily_Movement_Scenario1_${dateAndTime}.xlsx`;
       saveAs(excelBlob, filenameWithDateTime);
-    }
-  };
-
-  const exportToExcel2 = () => {
-    if (Relevant_result == null) {
-      window.alert("Fetching Result, Please Wait");
-      fetchReservationId_Revelant_result();
-    } else {
-      const workbook = XLSX.utils.book_new();
-      Object.entries(Relevant_result).forEach(([column, data]) => {
-        const parsedData = JSON.parse(data);
-        const worksheet = XLSX.utils.json_to_sheet(parsedData);
-        XLSX.utils.book_append_sheet(workbook, worksheet, column);
-      });
-      const excelBuffer = XLSX.write(workbook, {
-        type: "array",
-        bookType: "xlsx",
-      });
-      const excelBlob = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      saveAs(excelBlob, "Daily_Movement_results_Scenerio2.xlsx");
-      // Commented out the alert statement
-      // window.alert("Result Downloaded");
     }
   };
 
@@ -2064,7 +1723,8 @@ function Daily_Planner() {
                           ))}
                         </tbody>
                       </table>
-                      {/* <div
+                      For Inline Origin
+                      <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
@@ -2079,49 +1739,8 @@ function Daily_Planner() {
                           </strong>
                           <select
                             style={{ width: "200px", padding: "5px" }}
-                            onChange={handleSurplusInlineStateChange}
-                            value={surplusInlineState}
-                          >
-                            <option value="default">
-                              Select Destination Inline State
-                            </option>
-                            <option value="Andhra Pradesh">
-                              Andhra Pradesh
-                            </option>
-                            <option value="Bihar">Bihar</option>
-                            <option value="Chattisgarh">Chattisgarh</option>
-                            <option value="Goa">Goa</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Haryana">Haryana</option>
-                            <option value="Jammu & Kashmir">
-                              Jammu & Kashmir
-                            </option>
-                            <option value="Jharkhand">Jharkhand</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Kerala">Kerala</option>
-                            <option value="MP">Madhya Pradesh</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="NE">North East</option>
-                            <option value="Odisha">Odisha</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Tamil Nadu">Tamil Nadu</option>
-                            <option value="Telangana">Telangana</option>
-                            <option value="UP">Uttar Pradesh</option>
-                            <option value="Uttarakhand">Uttarakhand</option>
-                            <option value="West Bengal">West Bengal</option>
-                          </select>
-                        </div>
-                        <div
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <strong style={{ fontSize: "16px", padding: "5px" }}>
-                            Select Inline State
-                          </strong>
-                          <select
-                            style={{ width: "200px", padding: "5px" }}
-                            onChange={handleDefictInlineStateChange}
-                            value={deficitInlineState}
+                            onChange={handleSurplusInlineState1Change}
+                            value={surplusInlineState1}
                           >
                             <option value="default">Select Inline State</option>
                             <option value="Andhra Pradesh">
@@ -2160,15 +1779,102 @@ function Daily_Planner() {
                           <select
                             style={{ width: "200px", padding: "5px" }}
                             onChange={(e) =>
-                              setDeficitInlineRailhead(e.target.value)
+                              setSurplusInlineRailhead1(e.target.value)
                             }
-                            value={deficitInlineRailhead}
+                            value={surplusInlineRailhead1}
                           >
-                            {totalDeficitInlineRailhead.map((option) => (
+                            {totalSurplusInlineRailhead1.map((option) => (
                               <option key={option.value} value={option.value}>
                                 {option.label}
                               </option>
                             ))}
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong style={{ fontSize: "16px", padding: "5px" }}>
+                            Select Inline State
+                          </strong>
+                          <select
+                            style={{ width: "200px", padding: "5px" }}
+                            onChange={handleSurplusInlineState2Change}
+                            value={surplusInlineState2}
+                          >
+                            <option value="default">Select Inline State</option>
+                            <option value="Andhra Pradesh">
+                              Andhra Pradesh
+                            </option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chattisgarh">Chattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Jammu & Kashmir">
+                              Jammu & Kashmir
+                            </option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="MP">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="NE">North East</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="UP">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong style={{ fontSize: "16px", padding: "5px" }}>
+                            Select Inline Railhead
+                          </strong>
+                          <select
+                            style={{ width: "200px", padding: "5px" }}
+                            onChange={(e) =>
+                              setSurplusInlineRailhead2(e.target.value)
+                            }
+                            value={surplusInlineRailhead2}
+                          >
+                            {totalSurplusInlineRailhead2.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong
+                            style={{
+                              width: "200px",
+                              padding: "5px",
+                            }}
+                          >
+                            Select Commodity
+                          </strong>
+                          <select
+                            value={surplusInlineCommodity1}
+                            onChange={(e) => {
+                              setSurplusInlineCommodity1(e.target.value);
+                            }}
+                          >
+                            <option value="">Select Commodity</option>
+                            <option value="RRA">RRA</option>
+                            <option value="Wheat">Wheat</option>
+                            <option value="FRK">FRK</option>
+                            <option value="FRK RRA">FRK RRA</option>
+                            <option value="FRK BR">FRK BR</option>
+                            <option value="Coarse Grain">Coarse Grain</option>
+                            <option value="W+CGR">W+CGR</option>
+                            <option value="FRK+CGR">FRK+CGR</option>
                           </select>
                         </div>
                         <button
@@ -2181,10 +1887,271 @@ function Daily_Planner() {
                         >
                           Add
                         </button>
-                      </div> */}
-                      {/* <button onClick={handleOptimizePlan}>
-                        Optimize solution{" "}
-                      </button> */}
+                      </div>
+                      <table style={{ width: "60vw" }}>
+                        <thead>
+                          <tr>
+                            <th>Sno</th>
+                            <th>Railhead1</th>
+                            <th>State1</th>
+                            <th>Railhead2</th>
+                            <th>State2</th>
+                            <th>Value</th>
+                            <th>Commodity</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {surplusInline
+                            .filter((_, index) => index % 2 === 0)
+                            .map((row, index) => {
+                              const nextRow = surplusInline[index + 1];
+
+                              return (
+                                <tr key={index}>
+                                  <td>{index}</td>
+                                  <td>{row.origin_railhead}</td>
+                                  <td>{row.origin_state}</td>
+                                  <td>
+                                    {nextRow ? nextRow.origin_railhead : ""}
+                                  </td>
+                                  <td>{nextRow ? nextRow.origin_state : ""}</td>
+                                  <td>{row.Value}</td>
+                                  <td>{row.Commodity}</td>
+                                  <td>
+                                    <span
+                                      style={{
+                                        cursor: "pointer",
+                                        color: "#ff0000",
+                                        fontSize: "1.2rem",
+                                      }}
+                                      // onClick={() =>
+                                      //   handleDeleteRow_deficit__dest(row, index)
+                                      // }
+                                      title="Delete"
+                                    >
+                                      &times;
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                      For Inline Destination
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "60vw",
+                        }}
+                      >
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong style={{ fontSize: "16px", padding: "5px" }}>
+                            Select Inline State
+                          </strong>
+                          <select
+                            style={{ width: "200px", padding: "5px" }}
+                            onChange={handleDeficitInlineState1Change}
+                            value={deficitInlineState1}
+                          >
+                            <option value="default">Select Inline State</option>
+                            <option value="Andhra Pradesh">
+                              Andhra Pradesh
+                            </option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chattisgarh">Chattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Jammu & Kashmir">
+                              Jammu & Kashmir
+                            </option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="MP">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="NE">North East</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="UP">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong style={{ fontSize: "16px", padding: "5px" }}>
+                            Select Inline Railhead
+                          </strong>
+                          <select
+                            style={{ width: "200px", padding: "5px" }}
+                            onChange={(e) =>
+                              setDeficitInlineRailhead1(e.target.value)
+                            }
+                            value={deficitInlineRailhead1}
+                          >
+                            {totalDeficitInlineRailhead1.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong style={{ fontSize: "16px", padding: "5px" }}>
+                            Select Inline State
+                          </strong>
+                          <select
+                            style={{ width: "200px", padding: "5px" }}
+                            onChange={handleDeficitInlineState2Change}
+                            value={deficitInlineState2}
+                          >
+                            <option value="default">Select Inline State</option>
+                            <option value="Andhra Pradesh">
+                              Andhra Pradesh
+                            </option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chattisgarh">Chattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Jammu & Kashmir">
+                              Jammu & Kashmir
+                            </option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="MP">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="NE">North East</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="UP">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong style={{ fontSize: "16px", padding: "5px" }}>
+                            Select Inline Railhead
+                          </strong>
+                          <select
+                            style={{ width: "200px", padding: "5px" }}
+                            onChange={(e) =>
+                              setDeficitInlineRailhead2(e.target.value)
+                            }
+                            value={deficitInlineRailhead2}
+                          >
+                            {totalDeficitInlineRailhead2.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <strong
+                            style={{
+                              width: "200px",
+                              padding: "5px",
+                            }}
+                          >
+                            Select Commodity
+                          </strong>
+                          <select
+                            value={deficitInlineCommodity}
+                            onChange={(e) => {
+                              setDeficitInlineCommodity(e.target.value);
+                            }}
+                          >
+                            <option value="">Select Commodity</option>
+                            <option value="RRA">RRA</option>
+                            <option value="Wheat">Wheat</option>
+                            <option value="FRK">FRK</option>
+                            <option value="FRK RRA">FRK RRA</option>
+                            <option value="FRK BR">FRK BR</option>
+                            <option value="Coarse Grain">Coarse Grain</option>
+                            <option value="W+CGR">W+CGR</option>
+                            <option value="FRK+CGR">FRK+CGR</option>
+                          </select>
+                        </div>
+                        <button
+                          onClick={AddDeficitInline}
+                          style={{
+                            backgroundColor: "orange",
+                            width: 70,
+                            height: 40,
+                          }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                      <table style={{ width: "60vw" }}>
+                        <thead>
+                          <tr>
+                            <th>Sno</th>
+                            <th>Railhead1</th>
+                            <th>State1</th>
+                            <th>Railhead2</th>
+                            <th>State2</th>
+                            <th>Value</th>
+                            <th>Commodity</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {deficitInline
+                            .filter((_, index) => index % 2 === 0)
+                            .map((row, index) => {
+                              const nextRow = deficitInline[index + 1];
+                              return (
+                                <tr key={index}>
+                                  <td>{index}</td>
+                                  <td>{row.origin_railhead}</td>
+                                  <td>{row.origin_state}</td>
+                                  <td>
+                                    {nextRow ? nextRow.origin_railhead : ""}
+                                  </td>
+                                  <td>{nextRow ? nextRow.origin_state : ""}</td>
+                                  <td>{row.Value}</td>
+                                  <td>{row.Commodity}</td>
+                                  <td>
+                                    <span
+                                      style={{
+                                        cursor: "pointer",
+                                        color: "#ff0000",
+                                        fontSize: "1.2rem",
+                                      }}
+                                      // onClick={() =>
+                                      //   handleDeleteRow_deficit__dest(row, index)
+                                      // }
+                                      title="Delete"
+                                    >
+                                      &times;
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
                     </div>
                     {/* ----------------------------------------------------------------------------------------- */}
                     <br />
@@ -2703,8 +2670,8 @@ function Daily_Planner() {
                           className="btn btn-danger dropdown-toggle"
                           onClick={() => exportToExcel1()}
                         >
-                          <i className="fa fa-bars"></i> Download
-                          Railhead-Railhead Detailed Plan
+                          <i className="fa fa-bars"></i>
+                          Download Railhead-Railhead Detailed Plan
                         </button>
 
                         <button
@@ -2713,6 +2680,14 @@ function Daily_Planner() {
                           onClick={viewGrid}
                         >
                           View Railhead Detailed Plan
+                        </button>
+
+                        <button
+                          style={{ color: "white", marginLeft: "15px" }}
+                          className="btn btn-danger dropdown-toggle"
+                          onClick={exportToPDF}
+                        >
+                          Download PDF
                         </button>
                         {showMessage && (
                           <div style={{ marginTop: 15, marginLeft: 20 }}>

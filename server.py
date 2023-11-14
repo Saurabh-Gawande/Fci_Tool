@@ -1490,19 +1490,7 @@ def Daily_Planner():
                 confirmed_railhead_value.append(confirmed_data[i]["value"])
                 confirmed_railhead_commodities.append(confirmed_data[i]["commodity"])
             matrices_data = pd.ExcelFile("Input\\Non-TEFD.xlsx")
-            # surplus_wheat=pd.read_excel(data,sheet_name="Surplus_wheat",index_col=1)
-            # deficit_wheat=pd.read_excel(data,sheet_name="Deficit_wheat",index_col=1)
-            # surplus_rra=pd.read_excel(data,sheet_name="Surplus_RRA",index_col=1)
-            # deficit_rra=pd.read_excel(data,sheet_name="Deficit_RRA",index_col=1)
-            # # surplus_frk_rra=pd.read_excel(data,sheet_name="Surplus_FRK_RRA",index_col=1)
-            # # deficit_frk_rra=pd.read_excel(data,sheet_name="Deficit_FRK_RRA",index_col=1)
-            # # surplus_frk_br=pd.read_excel(data,sheet_name="Surplus_FRK_BR",index_col=1)
-            # # deficit_frk_br=pd.read_excel(data,sheet_name="Deficit_FRK_BR",index_col=1)
-            # # surplus_coarse=pd.read_excel(data,sheet_name="Surplus_Coarse_GR",index_col=1)
-            # # deficit_coarse=pd.read_excel(data,sheet_name="Deficit_Coarse_GR",index_col=1)
-            # # surplus_comm_mix=pd.read_excel(data,sheet_name="Surplus_Comm_mix",index_col=1)
-            # # deficit_comm_mix=pd.read_excel(data,sheet_name="Deficit_Comm_mix",index_col=1)
-            # rail_cost=pd.read_excel(data,sheet_name="Railhead_cost_matrix_1rake",index_col=0)
+            
             rail_cost = pd.read_excel(matrices_data, sheet_name="Railhead_cost_matrix", index_col=0)
             distance_rh = pd.read_excel(matrices_data, sheet_name="Railhead_dist_matrix", index_col=0)
             # # states_alloc=pd.read_excel(data,sheet_name="States_allocation",index_col=0)
@@ -1605,8 +1593,7 @@ def Daily_Planner():
             for wcgr in  wcgr_dest:
                 if wcgr["Value"] > 0:
                     dest_wcgr[wcgr["origin_railhead"]] = wcgr["Value"]
-            print(source_wheat)
-            print(dest_wheat)
+            
             L1 = list(source_wheat_inline.keys())
             L2 = list(source_rra_inline.keys())
             # L3=list(source_frk_rra_inline.keys())
@@ -1699,9 +1686,6 @@ def Daily_Planner():
             x_ij_frk=LpVariable.dicts("x_frk",[(i,j) for i in source_frk.keys() for j in dest_frk.keys()],cat="Integer")
             x_ij_frkcgr=LpVariable.dicts("x_frkcgr",[(i,j) for i in source_frkcgr.keys() for j in dest_frkcgr.keys()],cat="Integer")
             x_ij_wcgr=LpVariable.dicts("x_wcgr",[(i,j) for i in source_wcgr.keys() for j in dest_wcgr.keys()],cat="Integer")
-            print("x_ij_wheat", x_ij_wheat)
-            print("x_ij_rra", x_ij_rra)
-            print("x_ij_coarseGrain", x_ij_coarseGrain)
 
             prob += (
                 lpSum(x_ij_wheat[(i, j)] * rail_cost.loc[i][j] for i in source_wheat.keys() for j in dest_wheat.keys()) +
@@ -1763,7 +1747,7 @@ def Daily_Planner():
                 prob += lpSum(x_ij_wcgr[(j, i)] for j in source_wcgr.keys()) >= dest_wcgr[i] 
 
             prob.writeLP("FCI_monthly_model_allocation_rr.lp")
-            prob.solve(CPLEX())
+            prob.solve()
             print("Status:", LpStatus[prob.status])
             print("Minimum Cost of Transportation = Rs.", prob.objective.value(), "Lakh")
             print("Total Number of Variables:", len(prob.variables()))
